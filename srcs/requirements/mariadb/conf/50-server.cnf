@@ -1,0 +1,5 @@
+[mysqld]
+user            = mysql
+bind-address    = 0.0.0.0   # i guess this is the only thing that we change, all other things already default ones
+port            = 3306 
+max_connections = 1       # i only use wordpress
