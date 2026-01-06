@@ -1,7 +1,6 @@
 #!/bin/bash
 
-
-service mysql start
+service mariadb start
 
 
 mysql -e "CREATE DATABASE IF NOT EXISTS \`${MADANI_DATABASE}\`;"
@@ -10,6 +9,7 @@ mysql -e "GRANT ALL PRIVILEGES ON \`${MADANI_DATABASE}\`.* TO \`${MADANI_USER}\`
 mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MADANI_ROOT_PASSWORD}';"
 mysql -e "FLUSH PRIVILEGES;"
 
+# Shutdown the temporary service
 mysqladmin -u root -p$SQL_ROOT_PASSWORD shutdown
 
 exec mysqld_safe
