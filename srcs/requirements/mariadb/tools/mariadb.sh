@@ -10,6 +10,6 @@ mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MADANI_ROOT_PASSWORD}';
 mysql -e "FLUSH PRIVILEGES;"
 
 # Shutdown the temporary service
-mysqladmin -u root -p$SQL_ROOT_PASSWORD shutdown
+mysqladmin -u root -p$MADANI_ROOT_PASSWORD shutdown
 
 exec mysqld_safe

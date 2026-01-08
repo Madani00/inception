@@ -1,0 +1,19 @@
+version: 3
+
+services:
+
+  wordpress:
+    build: requirements/wordpress/.
+    container_name: wordpress
+    depends_on:
+      - mariadb
+  nginx:
+    build: requirements/wordpress/.
+    container_name: nginx
+    depends_on:
+      - wordpress
+
+
+  mariadb:
+    build: requirements/wordpress/.
+    container_name: mariadb
