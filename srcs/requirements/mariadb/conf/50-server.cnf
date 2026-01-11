@@ -1,4 +1,5 @@
 [mysqld]
+
 user            = mysql
 bind-address    = 0.0.0.0   # i guess this is the only thing that we change, all other things already default ones
 port            = 3306 
