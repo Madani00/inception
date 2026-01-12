@@ -86,8 +86,7 @@ if you see something like :
 > Success: WordPress downloaded.
 > Error: Database connection error (2002).
 
-it means wordpress --> Builds, downloads WP, and tries to connect.
-all good for now. sure the connection will fail cause the mariadb container is not running 
+all good, sure the connection will fail cause the mariadb container is not running 
 (and not connected via a Docker Network), this step is supposed to fail.
 
 ## 3. Test NGINX (The Gatekeeper)
