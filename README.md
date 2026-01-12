@@ -37,8 +37,52 @@ tation, articles, tutorials, etc.), as well as a description of how AI was used 
 specifying for which tasks and which parts of the project. -->
 
 
+# ✔️ Part 0: configs , dockerfiles ✔️
+## 1.MariaDB
+**50-server.cnf**
+```code
+[mysqld]
 
-# 🧪 Part 1: Individual Checks
+user            = mysql
+bind-address    = 0.0.0.0
+port            = 3306 
+```
+**mariadb.sh**
+```code
+#!/bin/bash
+
+mysqld_safe &
+
+sleep 5
+
+mysql -e "CREATE DATABASE IF NOT EXISTS \`${MADANI_DATABASE}\`;"
+mysql -e "CREATE USER IF NOT EXISTS \`${MADANI_USER}\`@'localhost' IDENTIFIED BY '${MADANI_PASSWORD}';"
+mysql -e "GRANT ALL PRIVILEGES ON \`${MADANI_DATABASE}\`.* TO \`${MADANI_USER}\`@'%' IDENTIFIED BY '${MADANI_PASSWORD}';"
+mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MADANI_ROOT_PASSWORD}';"
+mysql -e "FLUSH PRIVILEGES;"
+
+mysqladmin -u root -p"${MADANI_ROOT_PASSWORD}" shutdown
+
+exec mysqld_safe
+```
+**Dockerfile**
+```code
+FROM debian:bullseye-slim
+
+RUN apt-get update && apt-get install mariadb-server -y
+
+COPY conf/50-server.cnf	/etc/mysql/mariadb.conf.d/50-server.cnf
+
+COPY tools/mariadb.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/mariadb.sh
+
+ENTRYPOINT ["/usr/local/bin/mariadb.sh"]
+
+```
+
+
+
+# ✔️ Part 1: Individual Checks ✔️
 Since we haven't created the Docker network & docker compose yet,
 lets test all the 3 containers manually if everything is working fine.
 
@@ -100,7 +144,7 @@ docker run --rm -it -p 443:443 test-nginx
 ```
 if you see it hangs (stays running) and doesn't exit. --> ✅ Success
 
-- when you access nginx the homepage `https://localhost` you see and error page oftem means it is working
+- when you access nginx the homepage `https://localhost` you see and error page often means it is working
 Why? Because your NGINX looks in `/var/www/html`, and that folder is currently empty.
 
 now lets test manually a page, we will simple inject a file to that path so that you can see an actual page.
