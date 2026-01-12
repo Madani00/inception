@@ -98,7 +98,7 @@ docker build -t test-nginx .
 
 docker run --rm -it -p 443:443 test-nginx
 ```
-if you see it hangs (stays running) and doesn't exit. Success
+if you see it hangs (stays running) and doesn't exit. --> ✅ Success
 
 - when you access nginx the homepage `https://localhost` you see and error page oftem means it is working
 Why? Because your NGINX looks in `/var/www/html`, and that folder is currently empty.
