@@ -43,7 +43,7 @@ Since we haven't created the Docker network & docker compose yet,
 lets test all the 3 containers manually if everything is working fine.
 
 ## 1. Test MariaDB (The Engine)
-since you didn't create .env file, we'll pass the environment variables manually to mariadb.
+since you didn't create `.env` file, we'll pass the environment variables manually to mariadb.
 ```bash
 # Go to folder
 cd ~/inception/srcs/requirements/mariadb
@@ -83,8 +83,8 @@ docker build -t test-wordpress .
 docker run --rm -it test-wordpress
 ```
 if you see something like :
-Success: WordPress downloaded.
-Error: Database connection error (2002).
+| Success: WordPress downloaded.
+| Error: Database connection error (2002).
 
 it means wordpress --> Builds, downloads WP, and tries to connect.
 all good for now. sure the connection will fail cause the mariadb container is not running 
