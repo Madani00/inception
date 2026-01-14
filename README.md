@@ -48,7 +48,7 @@ bind-address    = 0.0.0.0
 port            = 3306 
 ```
 **mariadb.sh**
-```code
+```bash
 #!/bin/bash
 
 # actual MariaDB daemon launcher that starts the database process directly
