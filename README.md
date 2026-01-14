@@ -55,20 +55,25 @@ port            = 3306
 # The & puts it in the background, so the script continues
 mysqld_safe &  #  or mariadbd-safe &
 
+# gives MariaDB time to fully initialize and create the socket file (very important)
 sleep 5
 
 mysql -e "CREATE DATABASE IF NOT EXISTS \`${MADANI_DATABASE}\`;"
 mysql -e "CREATE USER IF NOT EXISTS \`${MADANI_USER}\`@'localhost' IDENTIFIED BY '${MADANI_PASSWORD}';"
 mysql -e "GRANT ALL PRIVILEGES ON \`${MADANI_DATABASE}\`.* TO \`${MADANI_USER}\`@'%' IDENTIFIED BY '${MADANI_PASSWORD}';"
+
+# Set root password (first time root has no password)
 mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MADANI_ROOT_PASSWORD}';"
 mysql -e "FLUSH PRIVILEGES;"
 
+# Shutdown the temporary service 
 mysqladmin -u root -p"${MADANI_ROOT_PASSWORD}" shutdown
 
+# Start MariaDB in foreground
 exec mysqld_safe
 ```
 **Dockerfile**
-```code
+```Dockerfile
 FROM debian:bullseye-slim
 
 RUN apt-get update && apt-get install mariadb-server -y
