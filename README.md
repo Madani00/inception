@@ -51,7 +51,9 @@ port            = 3306
 ```code
 #!/bin/bash
 
-mysqld_safe &
+# actual MariaDB daemon launcher that starts the database process directly
+# The & puts it in the background, so the script continues
+mysqld_safe &  #  or mariadbd-safe &
 
 sleep 5
 
@@ -77,7 +79,44 @@ COPY tools/mariadb.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/mariadb.sh
 
 ENTRYPOINT ["/usr/local/bin/mariadb.sh"]
+```
 
+## 2. WordPress
+
+**wordpress-php.sh**
+```code
+#!/bin/bash
+
+set -e
+
+mkdir -p /var/www/html
+
+cd /var/www/html
+
+curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+chmod +x wp-cli.phar
+
+php /var/www/html/wp-cli.phar  core download --allow-root
+php /var/www/html/wp-cli.phar  config create --dbname=wordpress --dbuser=wpuser --dbpass=password --dbhost=mariadb --allow-root
+php /var/www/html/wp-cli.phar  core install --url=localhost --title=inception --admin_user=admin --admin_password=admin --admin_email=admin@admin.com --allow-root
+
+
+# finally launch it
+/usr/sbin/php-fpm7.3 -F
+```
+
+**Dockerfile**
+```code
+FROM debian:bullseye-slim
+
+RUN apt-get update && apt-get install mariadb-server -y
+
+COPY conf/50-server.cnf	/etc/mysql/mariadb.conf.d/50-server.cnf
+
+COPY tools/mariadb.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/mariadb.sh
+
+ENTRYPOINT ["/usr/local/bin/mariadb.sh"]
 ```
 
 

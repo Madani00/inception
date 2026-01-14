@@ -14,6 +14,5 @@ php /var/www/html/wp-cli.phar  config create --dbname=wordpress --dbuser=wpuser 
 php /var/www/html/wp-cli.phar  core install --url=localhost --title=inception --admin_user=admin --admin_password=admin --admin_email=admin@admin.com --allow-root
 
 
-
 # finally launch it
 /usr/sbin/php-fpm7.3 -F
