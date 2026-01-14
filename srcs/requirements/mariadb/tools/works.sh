@@ -20,7 +20,7 @@ mysql -u root -p"${MADANI_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON \`${MADANI
 mysql -u root -p"${MADANI_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON \`${MADANI_DATABASE}\`.* TO \`${MADANI_USER}\`@'%' IDENTIFIED BY '${MADANI_PASSWORD}';"
 mysql -u root -p"${MADANI_ROOT_PASSWORD}" -e "FLUSH PRIVILEGES;"
 
-# Shutdown the temporary service 
+# Shutdown the temporary mariadb service 
 mysqladmin -u root -p"${MADANI_ROOT_PASSWORD}" shutdown
 
 # Start MariaDB in foreground

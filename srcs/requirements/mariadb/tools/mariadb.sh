@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 mysqld_safe &
 
 sleep 5

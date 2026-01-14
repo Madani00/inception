@@ -39,7 +39,7 @@ specifying for which tasks and which parts of the project. -->
 
 # ✔️ Part 0: configs , dockerfiles ✔️
 ## 1.MariaDB
-**50-server.cnf**
+**conf/50-server.cnf**
 ```code
 [mysqld]
 
@@ -47,7 +47,7 @@ user            = mysql
 bind-address    = 0.0.0.0
 port            = 3306 
 ```
-**mariadb.sh**
+**tools/mariadb.sh**
 ```bash
 #!/bin/bash
 
@@ -66,7 +66,7 @@ mysql -e "GRANT ALL PRIVILEGES ON \`${MADANI_DATABASE}\`.* TO \`${MADANI_USER}\`
 mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MADANI_ROOT_PASSWORD}';"
 mysql -e "FLUSH PRIVILEGES;"
 
-# Shutdown the temporary service 
+# Shutdown the temporary mariadb service 
 mysqladmin -u root -p"${MADANI_ROOT_PASSWORD}" shutdown
 
 # Start MariaDB in foreground
@@ -86,12 +86,65 @@ RUN chmod +x /usr/local/bin/mariadb.sh
 ENTRYPOINT ["/usr/local/bin/mariadb.sh"]
 ```
 
-## 2. WordPress
+
+## 2.Nginx
+there is a way to check if the syntax of the config file is correct with this command `nginx -t` inside the container or if you have nginx on the system as well.
+**conf/nginx.conf**
+```code
+events {
+    worker_connections 1024; # Max simultaneous connections per worker
+}
+
+http {
+	server {
+		listen 443 ssl;
+		ssl_protocols TLSv1.2 TLSv1.3;
+
+		ssl_certificate /etc/nginx/ssl/1337inception.crt;
+		ssl_certificate_key /etc/nginx/ssl/1337inception.key;
+
+		root /var/www/html;
+		server_name localhost;
+		index index.php index.html index.htm;
+
+		location / {
+			try_files $uri $uri/ =404;
+		}
+
+		location ~ \.php$ {						
+			include snippets/fastcgi-php.conf;
+			fastcgi_pass 127.0.0.1:9000;
+		}
+	}
+}
+
+```
+
+```
+**Dockerfile**
+```Dockerfile
+FROM debian:bullseye-slim
+
+RUN apt-get update && \
+    apt-get install nginx openssl -y && \
+    mkdir -p /etc/nginx/ssl
+
+RUN openssl req -x509 -nodes -out /etc/nginx/ssl/1337inception.crt -keyout /etc/nginx/ssl/1337inception.key \
+    -subj "/CN=eamchart.42.fr"
+
+COPY conf/nginx.conf /etc/nginx/nginx.conf
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+
+## 3. WordPress
 
 **wordpress-php.sh**
-```code
+```bash
 #!/bin/bash
 
+# means if any command fails. script stop immediatelly
 set -e
 
 mkdir -p /var/www/html
@@ -111,17 +164,21 @@ php /var/www/html/wp-cli.phar  core install --url=localhost --title=inception --
 ```
 
 **Dockerfile**
-```code
+```Dockerfile
 FROM debian:bullseye-slim
 
-RUN apt-get update && apt-get install mariadb-server -y
+RUN apt-get update &&  \
+    apt-get install -y curl  \
+    php7.3 \
+	php-fpm	\
+    php-mysql mariadb-client
 
-COPY conf/50-server.cnf	/etc/mysql/mariadb.conf.d/50-server.cnf
+#COPY conf/www.conf /etc/php/7.3/fpm/pool.d/.
 
-COPY tools/mariadb.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/mariadb.sh
+COPY tools/wordpress-php.sh .
+RUN chmod +x wordpress-php.sh
 
-ENTRYPOINT ["/usr/local/bin/mariadb.sh"]
+CMD ["./wordpress-php.sh"]
 ```
 
 
