@@ -113,13 +113,13 @@ http {
 
 		location ~ \.php$ {						
 			include snippets/fastcgi-php.conf;
-			fastcgi_pass 127.0.0.1:9000;
+			fastcgi_pass wordpress:9000;
 		}
 	}
 }
 
 ```
-
+`fastcgi_pass wordpress:9000` this line tell Nginx to send PHP requests to wordpress:9000 (By default, PHP-FPM server listening on port 9000 that binds to 127.0.0.1 (localhost).)
 ```
 **Dockerfile**
 ```Dockerfile
@@ -160,6 +160,7 @@ php /var/www/html/wp-cli.phar  core install --url=localhost --title=inception --
 
 
 # finally launch it
+# -F: PHP-FPM starts, puts itself in the background (daemon off)
 /usr/sbin/php-fpm7.3 -F
 ```
 
@@ -183,6 +184,13 @@ CMD ["./wordpress-php.sh"]
 
 
 
+
+
+
+
+
+
+
 # ✔️ Part 1: Individual Checks ✔️
 Since we haven't created the Docker network & docker compose yet,
 lets test all the 3 containers manually if everything is working fine.
@@ -194,14 +202,14 @@ since you didn't create `.env` file, we'll pass the environment variables manual
 cd ~/inception/srcs/requirements/mariadb
 
 # Build the image
-docker build -t test-mariadb .
+docker build -t mariadb-img .
 
 # Run it (Manually passing variables)
-docker run -d --name test-db \
+docker run -d --name mariadb-con \
   -e MADANI_USER=madanidb \
   -e MADANI_PASSWORD=madani_password \
   -e MADANI_ROOT_PASSWORD=root_password \
-  -e MADANI_DATABASE=madani_db mariadb
+  -e MADANI_DATABASE=madani_db mariadb-img
 
 # Check logs
 docker logs test-db
@@ -218,30 +226,15 @@ docker exec test-db mysql -u madanidb -p"madani_password" -e "SHOW DATABASES;"
 ```
 if you do not encounter any errors with these command, you are good to go
 
-## 2. Test WordPress (The App)
-This one might complain about missing DB, but PHP-FPM should still start.
-```bash
-cd ~/inception/srcs/requirements/wordpress
 
-docker build -t test-wordpress .
-
-docker run --rm -it test-wordpress
-```
-if you see something like :
-> Success: WordPress downloaded.
-> Error: Database connection error (2002).
-
-all good, sure the connection will fail cause the mariadb container is not running 
-(and not connected via a Docker Network), this step is supposed to fail.
-
-## 3. Test NGINX (The Gatekeeper)
+## 2. Test NGINX (The Gatekeeper)
 
 ```bash
 cd ~/inception/srcs/requirements/nginx
 
-docker build -t test-nginx .
+docker build -t nginx-img .
 
-docker run --rm -it -p 443:443 test-nginx
+docker run --rm -it -p 443:443 nginx-img
 ```
 if you see it hangs (stays running) and doesn't exit. --> ✅ Success
 
@@ -262,3 +255,112 @@ docker exec debug-nginx sh -c 'echo "<h1>Hello from Docker! NGINX is working.</h
 3. Bypass it: Click Advanced -> Proceed to... (unsafe).
 4. Success: You should see "Hello from Docker! NGINX is working."
 
+## 3. Test WordPress (The App)
+This one might complain about missing DB, but PHP-FPM should still start.
+```bash
+cd ~/inception/srcs/requirements/wordpress
+
+docker build -t wordpress-img .
+
+docker run --rm -it wordpress-img
+```
+if you see something like :
+> Success: WordPress downloaded.
+> Error: Database connection error (2002).
+
+all good, sure the connection will fail cause the mariadb container is not running 
+(and not connected via a Docker Network), this step is supposed to fail.
+
+
+
+
+
+
+
+
+## Test NGINX with WORDPRESS 
+
+- since you don't have connection established between the nginx and php, so they cannot communicate.
+Next step will be to configure php, and we will make a small modifications to it.
+- if you want to see how the default config for the php look likes do the following commands:
+```bash
+# run the container 
+docker run --name wordpress -d wordpress-img sleep 600
+
+# to copy the config file from the container to your host
+docker cp wordpress:/etc/php/7.4/fpm/pool.d/www.conf .
+```
+the only thing that you need to change in this config is a line  usually at (36 line) `listen = /run/php/php7.4-fpm.sock` to :
+```shell
+# The address on which to accept FastCGI requests.
+listen = wordpress:9000
+```
+NOte 
+make sure you nginx config file has this line `fastcgi_pass wordpress:9000` , wordpress is the name of your container keep that in mind.
+
+- now NGINX can send its work to PHP-FPM which waits in the background on Port 9000.
+
+
+### 🛠️ Step 1: Create a Manual Network
+nginx and wordpress containers are in isolated rooms , we need to put them in the same room to test the connection.  
+
+
+```bash
+docker network create test-net
+
+```
+### 🛠️ Step 2: Start WordPress
+- give it the specific name `wordpress` because that is what you wrote in your nginx.conf (fastcgi_pass wordpress:9000)
+- docker file should have this line `RUN mkdir -p /run/php` important 
+```bash
+docker build -t wordpress-img .
+
+docker run --rm -d --name wordpress  --network test-net \
+  -e MADANI_DATABASE=madani_db -e MADANI_USER=madanidb \
+  -e MADANI_PASSWORD=madani_password wordpress-img 
+```
+
+### 🛠️ Step 3: Start NGINX
+
+Now we start NGINX and attach it to the same network.
+```bash
+docker build -t nginx-img .
+docker run --rm -d --name nginx --network test-net \
+-p 443:443 nginx-img
+```
+both the containers should stay running so our test would be valid,
+When a container exits immediately, it usually "screamed" an error message, check it with this command to see where is the issue:
+```bash
+docker logs wordpress
+```
+
+### finally
+When you are done, kill them all with:
+```Bash
+
+docker stop nginx wordpress
+docker network rm test-net
+```
+- if you see an error that says "404 Not Found", that means nginx is still looking at its own /var/www/html, which is empty.
+NGINX cannot look inside the WordPress container's storage. that is why we need to create 
+a shared storage space so NGINX can see the files WordPress downloads.
+
+```bash
+# create a volume
+docker volume create manual-test-vol 
+
+docker run --rm -d --name wordpress  --network test-net -v manual-test-vol:/var/www/html \
+  -e MADANI_DATABASE=madani_db -e MADANI_USER=madanidb \
+  -e MADANI_PASSWORD=madani_password wordpress-img 
+
+docker run --rm -d --name nginx --network test-net -v manual-test-vol:/var/www/html \
+-p 443:443 nginx-img
+
+```
+If you do this:
+1. Go to https://localhost 
+2. (Success): You see "Error establishing a database connection" (This is perfect! It means NGINX found the file, sent it to PHP, and PHP ran).
+or you are lucky like me you are gonna see a page like this:
+
+
+file:///home/madani/Pictures/Screenshots/Screenshot%20from%202026-01-16%2017-21-31.png
