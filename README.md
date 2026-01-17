@@ -46,6 +46,7 @@ graph LR
   Nginx --> WordPress
   WordPress --> MariaDB
   Nginx -.-> TLS
+```
 
 # ✔️ Part 0: configs , dockerfiles ✔️
 ## 1.MariaDB
