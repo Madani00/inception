@@ -26,4 +26,4 @@ wp-cli config create --dbname=$MADANI_DATABASE \
 
 
 # finally launch it
-/usr/sbin/php-fpm7.4 -F
+exec /usr/sbin/php-fpm7.4 -F

@@ -355,6 +355,5 @@ If you do this:
 1. Go to https://localhost 
 2. (Success): You see "Error establishing a database connection" (This is perfect! It means NGINX found the file, sent it to PHP, and PHP ran).
 or you are lucky like me you are gonna see a page like this:
+![alt text](<Screenshot from 2026-01-17 10-27-53.png>)
 
-
-![alt text](<Screenshot from 2026-01-16 17-21-31.png>)
