@@ -6,7 +6,7 @@ curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.pha
 chmod +x wp-cli.phar
 mv wp-cli.phar /usr/local/bin/wp-cli
 
-mkdir -p /var/www/html && cd /var/www/html
+mkdir -p /var/www/html && cd /var/www/html && mkdir -p /run/php
 
 # php /var/www/html/wp-cli.phar  core download --allow-root
 # php /var/www/html/wp-cli.phar  config create --dbname=wordpress --dbuser=wpuser --dbpass=password --dbhost=mariadb --allow-root
@@ -26,4 +26,4 @@ wp-cli config create --dbname=$MADANI_DATABASE \
 
 
 # finally launch it
-exec /usr/sbin/php-fpm7.4 -F
+/usr/sbin/php-fpm7.4 -F

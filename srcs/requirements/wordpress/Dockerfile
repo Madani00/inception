@@ -12,6 +12,4 @@ COPY tools/wordpress-php.sh .
 RUN chmod +x wordpress-php.sh
 
 
-RUN mkdir -p /run/php
-
 CMD ["./wordpress-php.sh"]

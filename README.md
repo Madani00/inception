@@ -72,6 +72,7 @@ mysqladmin -u root -p"${MADANI_ROOT_PASSWORD}" shutdown
 # Start MariaDB in foreground
 exec mysqld_safe
 ```
+
 **Dockerfile**
 ```Dockerfile
 FROM debian:bullseye-slim
@@ -191,7 +192,7 @@ CMD ["./wordpress-php.sh"]
 
 
 
-# ✔️ Part 1: Individual Checks ✔️
+# ✔️ Part 1: Individual Basic Checks ✔️
 Since we haven't created the Docker network & docker compose yet,
 lets test all the 3 containers manually if everything is working fine.
 
@@ -215,13 +216,13 @@ docker run -d --name mariadb-con \
 docker logs test-db
 
 # Test connection as root
-docker exec test-db mysql -u root -p"root_password" -e "SELECT 1;"
+docker exec mariadb-con mysql -u root -p"root_password" -e "SELECT 1;"
 
 # Test connection as the regular user
-docker exec test-db mysql -u madanidb -p"madani_password" -e "SELECT 1;"
+docker exec mariadb-con mysql -u madanidb -p"madani_password" -e "SELECT 1;"
 
 # Verify database exists
-docker exec test-db mysql -u madanidb -p"madani_password" -e "SHOW DATABASES;"
+docker exec mariadb-con mysql -u madanidb -p"madani_password" -e "SHOW DATABASES;"
 
 ```
 if you do not encounter any errors with these command, you are good to go
@@ -243,9 +244,9 @@ Why? Because your NGINX looks in `/var/www/html`, and that folder is currently e
 
 now lets test manually a page, we will simple inject a file to that path so that you can see an actual page.
 ```bash
-docker run --rm -d -p 443:443 --name debug-nginx test-nginx
+docker run --rm -d -p 443:443 --name nginx-con nginx-img
 # this command will create an index.html manually inside the running container
-docker exec debug-nginx sh -c 'echo "<h1>Hello from Docker! NGINX is working.</h1>" > /var/www/html/index.html'
+docker exec nginx-con sh -c 'echo "<h1>Hello from Docker! NGINX is working.</h1>" > /var/www/html/index.html'
 ```
 
 **Check the Browser**
@@ -275,16 +276,13 @@ all good, sure the connection will fail cause the mariadb container is not runni
 
 
 
-
-
-
-## Test NGINX with WORDPRESS 
+# ✔️ Part 2: Advancec Checks NGINX & WORDPRESS ✔️
 
 - since you don't have connection established between the nginx and php, so they cannot communicate.
-Next step will be to configure php, and we will make a small modifications to it.
+so next we need to configure php, and we will make a small modifications to it.
 - if you want to see how the default config for the php look likes do the following commands:
 ```bash
-# run the container 
+# run the container , make sure it stays up running so you can copy the file successfully
 docker run --name wordpress -d wordpress-img sleep 600
 
 # to copy the config file from the container to your host
@@ -295,23 +293,19 @@ the only thing that you need to change in this config is a line  usually at (36 
 # The address on which to accept FastCGI requests.
 listen = wordpress:9000
 ```
-NOte 
-make sure you nginx config file has this line `fastcgi_pass wordpress:9000` , wordpress is the name of your container keep that in mind.
+⚠️ NOTE : make sure your nginx config file has this line `fastcgi_pass wordpress:9000` ,wordpress is the name of your container keep that in mind.
+now NGINX can send its work to PHP-FPM which waits in the background on Port 9000.
 
-- now NGINX can send its work to PHP-FPM which waits in the background on Port 9000.
-
-
+nginx and wordpress containers are in isolated rooms , we need to put them in the same room to test the connection.
+to do so lets do the following: 
 ### 🛠️ Step 1: Create a Manual Network
-nginx and wordpress containers are in isolated rooms , we need to put them in the same room to test the connection.  
-
 
 ```bash
 docker network create test-net
 
 ```
 ### 🛠️ Step 2: Start WordPress
-- give it the specific name `wordpress` because that is what you wrote in your nginx.conf (fastcgi_pass wordpress:9000)
-- docker file should have this line `RUN mkdir -p /run/php` important 
+
 ```bash
 docker build -t wordpress-img .
 
@@ -363,4 +357,4 @@ If you do this:
 or you are lucky like me you are gonna see a page like this:
 
 
-file:///home/madani/Pictures/Screenshots/Screenshot%20from%202026-01-16%2017-21-31.png
+![alt text](<Screenshot from 2026-01-16 17-21-31.png>)
