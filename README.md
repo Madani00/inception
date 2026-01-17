@@ -120,8 +120,9 @@ http {
 }
 
 ```
+
 `fastcgi_pass wordpress:9000` this line tell Nginx to send PHP requests to wordpress:9000 (By default, PHP-FPM server listening on port 9000 that binds to 127.0.0.1 (localhost).)
-```
+
 **Dockerfile**
 ```Dockerfile
 FROM debian:bullseye-slim
