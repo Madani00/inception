@@ -36,6 +36,9 @@ section listing classic references related to the topic (documen-
 tation, articles, tutorials, etc.), as well as a description of how AI was used —
 specifying for which tasks and which parts of the project. -->
 
+![Build](https://img.shields.io/github/actions/workflow/status/OWNER/REPO/ci.yml)
+![License](https://img.shields.io/badge/license-MIT-blue)
+![Docker](https://img.shields.io/docker/image-size/OWNER/wordpress-img/latest)
 
 # ✔️ Part 0: configs , dockerfiles ✔️
 ## 1.MariaDB
