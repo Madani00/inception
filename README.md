@@ -48,6 +48,17 @@ graph LR
   Nginx -.-> TLS
 ```
 
+| Task | Command |
+| --- | --- |
+| Start stack | `docker compose -f srcs/docker-compose.yml up -d` |
+| Logs | `docker compose -f srcs/docker-compose.yml logs -f nginx` |
+| Tear down | `docker compose -f srcs/docker-compose.yml down -v` |
+
+- [ ] Run lint/tests
+- [ ] Update README if configs change
+
+> ⚠️ Expose port 443 only in trusted networks.
+
 # ✔️ Part 0: configs , dockerfiles ✔️
 ## 1.MariaDB
 **conf/50-server.cnf**
