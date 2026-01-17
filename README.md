@@ -43,6 +43,7 @@ specifying for which tasks and which parts of the project. -->
 
 ```mermaid
 graph LR
+  client --> Nginx
   Nginx --> WordPress
   WordPress --> MariaDB
   Nginx -.-> TLS
