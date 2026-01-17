@@ -230,7 +230,7 @@ cd ~/inception/srcs/requirements/mariadb
 docker build -t mariadb-img .
 
 # Run it (Manually passing variables)
-docker run -d --name mariadb-con \
+docker run -d --name mariadb \
   -e MADANI_USER=madanidb \
   -e MADANI_PASSWORD=madani_password \
   -e MADANI_ROOT_PASSWORD=root_password \
@@ -240,13 +240,13 @@ docker run -d --name mariadb-con \
 docker logs test-db
 
 # Test connection as root
-docker exec mariadb-con mysql -u root -p"root_password" -e "SELECT 1;"
+docker exec mariadb mysql -u root -p"root_password" -e "SELECT 1;"
 
 # Test connection as the regular user
-docker exec mariadb-con mysql -u madanidb -p"madani_password" -e "SELECT 1;"
+docker exec mariadb mysql -u madanidb -p"madani_password" -e "SELECT 1;"
 
 # Verify database exists
-docker exec mariadb-con mysql -u madanidb -p"madani_password" -e "SHOW DATABASES;"
+docker exec mariadb mysql -u madanidb -p"madani_password" -e "SHOW DATABASES;"
 
 ```
 if you do not encounter any errors with these command, you are good to go
@@ -300,7 +300,7 @@ all good, sure the connection will fail cause the mariadb container is not runni
 
 
 
-# ✔️ Part 2: Advancec Checks NGINX & WORDPRESS ✔️
+# ✔️ Part 2: Advanced Checks NGINX & WORDPRESS & MariaDB ✔️
 
 - since you don't have connection established between the nginx and php, so they cannot communicate.
 so next we need to configure php, and we will make a small modifications to it.
@@ -322,6 +322,7 @@ now NGINX can send its work to PHP-FPM which waits in the background on Port 900
 
 nginx and wordpress containers are in isolated rooms , we need to put them in the same room to test the connection.
 to do so lets do the following: 
+## test NGINX & WORDPRESS
 ### 🛠️ Step 1: Create a Manual Network
 
 ```bash
@@ -384,8 +385,57 @@ if you click submit you are gonna see this:
 ![alt text](<Screenshot from 2026-01-17 13-43-32.png>)
 
 This is perfect! It means NGINX found the file, sent it to PHP, and PHP ran.
-
+WordPress needs a database to work, at least know its password, name and host.
+All this is configured in the file `wp-config.php`, you where are going to configure this file to make the setup automatic.
 `wp-config.php`
 ```shell
 
 ```
+## test MariaDB & WORDPRESS
+
+### 🧹 Step 1: The "Clean Slate" Protocol
+```bash
+# 1. Stop and remove containers
+docker stop nginx wordpress mariadb
+docker rm nginx wordpress mariadb
+
+# 2. Remove the volume & Volume (CRITICAL - Deletes old wp-config.php)
+docker volume rm manual-test-vol
+docker network rm test-net
+
+# 3. Re-create Network and Volume
+docker network create test-net
+docker volume create manual-test-vol
+```
+
+
+```bash
+docker build -t mariadb-img .
+docker build -t wordpress-img .
+docker build -t nginx-img .
+
+docker run --rm -d --name wordpress  --network test-net -v manual-test-vol:/var/www/html \
+-e MADANI_DATABASE=madani_db -e MADANI_USER=madanidb \
+-e MADANI_PASSWORD=madani_password wordpress-img 
+
+docker run --rm -d --name nginx --network test-net -v manual-test-vol:/var/www/html \
+-p 443:443 nginx-img
+
+
+docker run --rm -d --name mariadb --network test-net  \
+-e MADANI_USER=madanidb -e MADANI_PASSWORD=madani_password \
+-e MADANI_ROOT_PASSWORD=root_password -e MADANI_DATABASE=madani_db mariadb-img
+
+
+```
+
+# wordpress error why??
+Error: YIKES! It looks like you're running this as root. You probably meant to run this as the user that your WordPress installation exists under.
+
+If you REALLY mean to run this as root, we won't stop you, but just bear in mind that any code on this site will then have full control of your server, making it quite DANGEROUS.
+
+If you'd like to continue as root, please run this again, adding this flag:  --allow-root
+
+If you'd like to run it as the user that this site is under, you can run the following to become the respective user:
+
+    sudo -u USER -i -- wp <command>

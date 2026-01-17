@@ -11,7 +11,6 @@ COPY conf/www.conf /etc/php/7.4/fpm/pool.d/.
 COPY tools/wordpress-php.sh .
 RUN chmod +x wordpress-php.sh
 
-
 CMD ["./wordpress-php.sh"]
 
 
