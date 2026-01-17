@@ -40,6 +40,13 @@ specifying for which tasks and which parts of the project. -->
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Docker](https://img.shields.io/docker/image-size/OWNER/wordpress-img/latest)
 
+
+```mermaid
+graph LR
+  Nginx --> WordPress
+  WordPress --> MariaDB
+  Nginx -.-> TLS
+
 # ✔️ Part 0: configs , dockerfiles ✔️
 ## 1.MariaDB
 **conf/50-server.cnf**
