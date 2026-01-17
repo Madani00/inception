@@ -13,3 +13,5 @@ RUN chmod +x wordpress-php.sh
 
 
 CMD ["./wordpress-php.sh"]
+
+

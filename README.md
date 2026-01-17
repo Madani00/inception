@@ -353,7 +353,15 @@ docker run --rm -d --name nginx --network test-net -v manual-test-vol:/var/www/h
 ```
 If you do this:
 1. Go to https://localhost 
-2. (Success): You see "Error establishing a database connection" (This is perfect! It means NGINX found the file, sent it to PHP, and PHP ran).
-or you are lucky like me you are gonna see a page like this:
+2. if you are lucky like me you are gonna see a page like this:
 ![alt text](<Screenshot from 2026-01-17 10-27-53.png>)
+which means **Success**: NGINX served the page & PHP executed the code.
+if you click submit you are gonna see this:
+![alt text](<Screenshot from 2026-01-17 13-43-32.png>)
 
+This is perfect! It means NGINX found the file, sent it to PHP, and PHP ran.
+
+`wp-config.php`
+```shell
+
+```
