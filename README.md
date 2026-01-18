@@ -418,7 +418,8 @@ docker run --rm -d --name nginx --network test-net -v manual-test-vol:/var/www/h
 -p 443:443 nginx-img
 
 ```
-
+if all goes well you are gonna see this:
+![alt text](<Screenshot from 2026-01-18 16-58-31.png>)
 
 
 
