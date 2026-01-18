@@ -32,7 +32,15 @@ wp-cli config create --dbname=$MADANI_DATABASE \
 							--dbuser=$MADANI_USER \
 							--dbpass=$MADANI_PASSWORD \
 							--dbhost=mariadb:3306 \
-							--allow-root 
+							--allow-root
+
+# Install WordPress with site details.
+wp-cli core install --url="localhost" \
+					--title="Inception" \
+					--admin_user="$MADANI_WP_ADMIN_USER" \
+					--admin_password="$MADANI_WP_ADMIN_PASSWORD" \
+					--admin_email="$MADANI_WP_ADMIN_EMAIL" \
+					--allow-root
 
 # finally launch it
 exec /usr/sbin/php-fpm7.4 -F

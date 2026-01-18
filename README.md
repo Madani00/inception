@@ -422,7 +422,19 @@ if all goes well you are gonna see this:
 ![alt text](<Screenshot from 2026-01-18 16-58-31.png>)
 
 
+```bash
+# create the images again cause you change the script
+docker build -t wordpress-img .
 
+# run now the container with the new variables we added
+docker run --rm -d --name wordpress  --network test-net -v manual-test-vol:/var/www/html \
+-e MADANI_DATABASE=madani_db -e MADANI_USER=madanidb \
+-e MADANI_PASSWORD=madani_password -e MADANI_WP_ADMIN_USER=daniel \
+-e MADANI_WP_ADMIN_PASSWORD=daniel_password -e MADANI_WP_ADMIN_EMAIL=daniel@gmail.com \
+wordpress-img 
+```
+if all goas well you are gonna see this page
+![alt text](<Screenshot from 2026-01-18 17-12-17.png>)
 
 
 
