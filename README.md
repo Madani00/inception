@@ -414,18 +414,17 @@ docker build -t mariadb-img .
 docker build -t wordpress-img .
 docker build -t nginx-img .
 
+
+docker run --rm -d --name mariadb --network test-net  \
+-e MADANI_USER=madanidb -e MADANI_PASSWORD=madani_password \
+-e MADANI_ROOT_PASSWORD=root_password -e MADANI_DATABASE=madani_db mariadb-img
+
 docker run --rm -d --name wordpress  --network test-net -v manual-test-vol:/var/www/html \
 -e MADANI_DATABASE=madani_db -e MADANI_USER=madanidb \
 -e MADANI_PASSWORD=madani_password wordpress-img 
 
 docker run --rm -d --name nginx --network test-net -v manual-test-vol:/var/www/html \
 -p 443:443 nginx-img
-
-
-docker run --rm -d --name mariadb --network test-net  \
--e MADANI_USER=madanidb -e MADANI_PASSWORD=madani_password \
--e MADANI_ROOT_PASSWORD=root_password -e MADANI_DATABASE=madani_db mariadb-img
-
 
 ```
 
