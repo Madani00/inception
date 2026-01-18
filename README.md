@@ -320,15 +320,24 @@ listen = wordpress:9000
 now NGINX can send its work to PHP-FPM which waits in the background on Port 9000.
 
 nginx and wordpress containers are in isolated rooms , we need to put them in the same room to test the connection.
-to do so lets do the following: 
+
 ## test NGINX & WORDPRESS
-### 🛠️ Step 1: Create a Manual Network
+### 🛠️ Step 1: Create a Manual Network 
 
 ```bash
 docker network create test-net
 
 ```
-### 🛠️ Step 2: Start WordPress
+### 🛠️ Step 2: Create a Volume
+NGINX cannot look inside the WordPress container's storage. that is why we need to create 
+a shared storage space so NGINX can see the files WordPress downloads.
+
+```bash
+# create a volume
+docker volume create manual-test-vol 
+```
+
+### 🛠️ Step 3: Start WordPress
 
 ```bash
 docker build -t wordpress-img .
@@ -339,7 +348,7 @@ docker run --rm -d --name wordpress  --network test-net -v manual-test-vol:/var/
 
 ```
 
-### 🛠️ Step 3: Start NGINX
+### 🛠️ Step 4: Start NGINX
 
 Now we start NGINX and attach it to the same network.
 ```bash
@@ -350,29 +359,8 @@ docker run --rm -d --name nginx --network test-net -v manual-test-vol:/var/www/h
 ```
 both the containers should stay running so our test would be valid.
 
-### finally
-When you are done, kill them all with:
-```Bash
 
-docker stop nginx wordpress
-docker network rm test-net
-```
-- if you see an error that says "404 Not Found", that means nginx is still looking at its own /var/www/html, which is empty.
-NGINX cannot look inside the WordPress container's storage. that is why we need to create 
-a shared storage space so NGINX can see the files WordPress downloads.
-
-```bash
-# create a volume
-docker volume create manual-test-vol 
-
-docker run --rm -d --name wordpress  --network test-net -v manual-test-vol:/var/www/html \
-  -e MADANI_DATABASE=madani_db -e MADANI_USER=madanidb \
-  -e MADANI_PASSWORD=madani_password wordpress-img 
-
-docker run --rm -d --name nginx --network test-net -v manual-test-vol:/var/www/html \
--p 443:443 nginx-img
-
-```
+### 🛠️ Step 5: test 
 If you do this:
 1. Go to https://localhost 
 2. if you are lucky like me you are gonna see a page like this:
@@ -435,3 +423,6 @@ If you'd like to continue as root, please run this again, adding this flag:  --a
 If you'd like to run it as the user that this site is under, you can run the following to become the respective user:
 
     sudo -u USER -i -- wp <command>
+
+
+`- if you see an error that says "404 Not Found", that means nginx is still looking at its own /var/www/html, which is empty.`
