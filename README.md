@@ -371,11 +371,15 @@ if you click submit you are gonna see this:
 
 This is perfect! It means NGINX found the file, sent it to PHP, and PHP ran.
 WordPress needs a database to work, at least know its password, name and host.
-All this is configured in the file `wp-config.php`, you where are going to configure this file to make the setup automatic.
-`wp-config.php`
-```shell
-
+All this is configured in the file `wp-config.php`, you where are going to configure this file to make the setup automatic. that's why the following line in **wordpress-php.sh**
+```yaml
+wp-cli config create --dbname=$MADANI_DATABASE \
+							--dbuser=$MADANI_USER \
+							--dbpass=$MADANI_PASSWORD \
+							--dbhost=mariadb:3306 \
+							--allow-root 
 ```
+
 ## test MariaDB & WORDPRESS
 
 ### 🧹 Step 1: The "Clean Slate" Protocol
