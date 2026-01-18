@@ -383,7 +383,7 @@ wp-cli config create --dbname=$MADANI_DATABASE \
 first of all before testing all togother, let's first clean everything
 ### 🧹 Step 1: Clean
 
-```bash
+```zsh
 # Stop and remove containers
 docker stop nginx wordpress mariadb
 docker rm nginx wordpress mariadb
