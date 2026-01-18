@@ -382,6 +382,7 @@ wp-cli config create --dbname=$MADANI_DATABASE \
 
 first of all before testing all togother, let's first clean everything
 ### 🧹 Step 1: Clean
+
 ```bash
 # Stop and remove containers
 docker stop nginx wordpress mariadb
@@ -397,6 +398,7 @@ docker volume create manual-test-vol
 ```
 
 ### 🛠️ Step 2: Start all
+
 ```bash
 # again create the images
 docker build -t mariadb-img .
