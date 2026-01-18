@@ -236,8 +236,6 @@ docker run -d --name mariadb \
   -e MADANI_ROOT_PASSWORD=root_password \
   -e MADANI_DATABASE=madani_db mariadb-img
 
-# Check logs
-docker logs test-db
 
 # Test connection as root
 docker exec mariadb mysql -u root -p"root_password" -e "SELECT 1;"
@@ -297,21 +295,22 @@ all good, sure the connection will fail cause the mariadb container is not runni
 (and not connected via a Docker Network), this step is supposed to fail.
 
 
+# some usefull commands
+```bash
+# Check logs
+# When a container exits immediately, it usually "screamed" an error message, check it with
+docker logs test-db
 
+# to copy the config file from the container to your host, (wordpress is container name)
+docker cp wordpress:/etc/php/7.4/fpm/pool.d/www.conf .
+
+```
 
 
 # ✔️ Part 2: Advanced Checks NGINX & WORDPRESS & MariaDB ✔️
 
 - since you don't have connection established between the nginx and php, so they cannot communicate.
 so next we need to configure php, and we will make a small modifications to it.
-- if you want to see how the default config for the php look likes do the following commands:
-```bash
-# run the container , make sure it stays up running so you can copy the file successfully
-docker run --name wordpress -d wordpress-img sleep 600
-
-# to copy the config file from the container to your host
-docker cp wordpress:/etc/php/7.4/fpm/pool.d/www.conf .
-```
 the only thing that you need to change in this config is a line  usually at (36 line) `listen = /run/php/php7.4-fpm.sock` to :
 ```shell
 # The address on which to accept FastCGI requests.
@@ -334,9 +333,10 @@ docker network create test-net
 ```bash
 docker build -t wordpress-img .
 
-docker run --rm -d --name wordpress  --network test-net \
+docker run --rm -d --name wordpress  --network test-net -v manual-test-vol:/var/www/html \
   -e MADANI_DATABASE=madani_db -e MADANI_USER=madanidb \
   -e MADANI_PASSWORD=madani_password wordpress-img 
+
 ```
 
 ### 🛠️ Step 3: Start NGINX
@@ -344,14 +344,11 @@ docker run --rm -d --name wordpress  --network test-net \
 Now we start NGINX and attach it to the same network.
 ```bash
 docker build -t nginx-img .
-docker run --rm -d --name nginx --network test-net \
+docker run --rm -d --name nginx --network test-net -v manual-test-vol:/var/www/html \
 -p 443:443 nginx-img
+
 ```
-both the containers should stay running so our test would be valid,
-When a container exits immediately, it usually "screamed" an error message, check it with this command to see where is the issue:
-```bash
-docker logs wordpress
-```
+both the containers should stay running so our test would be valid.
 
 ### finally
 When you are done, kill them all with:
