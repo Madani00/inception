@@ -371,39 +371,39 @@ if you click submit you are gonna see this:
 
 This is perfect! It means NGINX found the file, sent it to PHP, and PHP ran.
 WordPress needs a database to work, at least know its password, name and host.
-All this is configured in the file `wp-config.php`, you where are going to configure this file to make the setup automatic. that's why the following line in **wordpress-php.sh**
+All this is configured in the file `wp-config.php`, your job is to configure this file to make the setup automatic. that's why we added the following line in **wordpress-php.sh**
 ```yaml
 wp-cli config create --dbname=$MADANI_DATABASE \
-							--dbuser=$MADANI_USER \
-							--dbpass=$MADANI_PASSWORD \
-							--dbhost=mariadb:3306 \
-							--allow-root 
+--dbuser=$MADANI_USER --dbpass=$MADANI_PASSWORD \
+--dbhost=mariadb:3306 --allow-root 
 ```
 
-## test MariaDB & WORDPRESS
+## test MariaDB & WORDPRESS & Nginx
 
-### 🧹 Step 1: The "Clean Slate" Protocol
+first of all before testing all togother, let's first clean everything
+### 🧹 Step 1: Clean
 ```bash
-# 1. Stop and remove containers
+# Stop and remove containers
 docker stop nginx wordpress mariadb
 docker rm nginx wordpress mariadb
 
-# 2. Remove the volume & Volume (CRITICAL - Deletes old wp-config.php)
+# Remove the volume & Volume 
 docker volume rm manual-test-vol
 docker network rm test-net
 
-# 3. Re-create Network and Volume
+# Re-create Network and Volume
 docker network create test-net
 docker volume create manual-test-vol
 ```
 
-
+### 🛠️ Step 2: Start all
 ```bash
+# again create the images
 docker build -t mariadb-img .
 docker build -t wordpress-img .
 docker build -t nginx-img .
 
-
+# now run the cotainers
 docker run --rm -d --name mariadb --network test-net  \
 -e MADANI_USER=madanidb -e MADANI_PASSWORD=madani_password \
 -e MADANI_ROOT_PASSWORD=root_password -e MADANI_DATABASE=madani_db mariadb-img
@@ -416,6 +416,12 @@ docker run --rm -d --name nginx --network test-net -v manual-test-vol:/var/www/h
 -p 443:443 nginx-img
 
 ```
+
+
+
+
+
+
 
 # wordpress error why??
 Error: YIKES! It looks like you're running this as root. You probably meant to run this as the user that your WordPress installation exists under.
