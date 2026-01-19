@@ -137,7 +137,7 @@ http {
 
 		location ~ \.php$ {						
 			include snippets/fastcgi-php.conf;
-			fastcgi_pass wordpress:9000;
+			fastcgi_pass 127.0.0.1:9000;
 		}
 	}
 }
@@ -257,11 +257,11 @@ cd ~/inception/srcs/requirements/nginx
 
 docker build -t nginx-img .
 
-docker run --rm -it -p 443:443 nginx-img
+docker run --rm -it --name nginx -p 443:443 nginx-img
 ```
 if you see it hangs (stays running) and doesn't exit. --> ✅ Success
 
-- when you access nginx the homepage `https://localhost` you see and error page often means it is working
+> when you access nginx the homepage `https://localhost` you see and error page often means it is working
 Why? Because your NGINX looks in `/var/www/html`, and that folder is currently empty.
 
 now lets test manually a page, we will simple inject a file to that path so that you can see an actual page.
@@ -423,7 +423,7 @@ if all goes well you are gonna see this:
 
 
 ```bash
-# create the images again cause you change the script
+# create the images again cause we changed the script
 docker build -t wordpress-img .
 
 # run now the container with the new variables we added

@@ -12,7 +12,6 @@ COPY conf/nginx.conf /etc/nginx/nginx.conf
 
 #RUN chmod 755 /var/www/html
 #RUN chown -R www-data:www-data /var/www/html
-RUN echo "<h1>Hello from Docker! NGINX is working.</h1>" > /var/www/html/index.html
 
 CMD ["nginx", "-g", "daemon off;"]
 
