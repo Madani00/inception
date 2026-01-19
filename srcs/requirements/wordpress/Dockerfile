@@ -8,9 +8,9 @@ RUN apt-get update &&  \
 
 COPY conf/www.conf /etc/php/7.4/fpm/pool.d/.
 
-COPY tools/wordpress-php.sh .
-RUN chmod +x wordpress-php.sh
+COPY tools/wordpress-php.sh /usr/local/bin/ 
+RUN chmod +x /usr/local/bin/wordpress-php.sh
 
-CMD ["./wordpress-php.sh"]
+ENTRYPOINT ["wordpress-php.sh"]
 
 
