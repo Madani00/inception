@@ -72,7 +72,8 @@ socket = /run/mysqld/mysqld.sock
 bind-address = 0.0.0.0
 port = 3306 
 ```
-`bind-address` is the only thing we changed, all other things already default ones, By default, MariaDB sets this to `127.0.0.1`, which means "Only accept connections from inside this container. Since WordPress is in a *different* container, it is coming from the "outside." Setting this to `0.0.0.0` (or ) tells MariaDB to accept connections from **any IP address** on the network.
+`bind-address` is the only thing we changed, all other things already default ones, By default, MariaDB sets this to `127.0.0.1`, which means "Only accept connections from inside this container. Since WordPress is in a *different* container, it is coming from the "outside." Setting this to `0.0.0.0`  tells MariaDB to accept connections from **any IP address** on the network.
+
 **tools/mariadb.sh**
 ```bash
 #!/bin/bash
