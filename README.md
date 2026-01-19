@@ -111,15 +111,19 @@ RUN apt-get update && apt-get install mariadb-server -y
 
 COPY conf/50-server.cnf	/etc/mysql/mariadb.conf.d/50-server.cnf
 
+# Create the folder for the socket
+RUN mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld
+
 COPY tools/mariadb.sh .
 RUN chmod +x mariadb.sh
 
 ENTRYPOINT ["./mariadb.sh"]
+- [ ] creating this `/run/mysqld` in necessary, if doesn't exist or isn't, MariaDB will crash immediately.
 ```
 
 
 ## 2.Nginx
-there is a way to check if the syntax of the config file is correct with this command `nginx -t` inside the container or if you have nginx on the system as well.
+
 **conf/nginx.conf**
 ```code
 events {
@@ -150,8 +154,7 @@ http {
 }
 
 ```
-
-`fastcgi_pass wordpress:9000` this line tell Nginx to send PHP requests to wordpress:9000 (By default, PHP-FPM server listening on port 9000 that binds to 127.0.0.1 (localhost).)
+`nginx -t` this command is to check if the syntax of the config file correct.
 
 **Dockerfile**
 ```Dockerfile
@@ -167,6 +170,12 @@ RUN openssl req -x509 -nodes -out /etc/nginx/ssl/1337inception.crt -keyout /etc/
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 
 CMD ["nginx", "-g", "daemon off;"]
+```
+in the future to be able to access `eamchart.42.fr` you need to make it points to its local IP address (127.0.0.1) via:
+```code
+vi /etc/hosts
+
+127.0.0.1   eamchart.42.fr
 ```
 
 
@@ -310,6 +319,8 @@ docker logs test-db
 # to copy the config file from the container to your host, (wordpress is container name)
 docker cp wordpress:/etc/php/7.4/fpm/pool.d/www.conf .
 
+
+
 ```
 
 
@@ -322,7 +333,10 @@ the only thing that you need to change in this config is a line  usually at (36 
 # The address on which to accept FastCGI requests.
 listen = wordpress:9000
 ```
-⚠️ NOTE : make sure your nginx config file has this line `fastcgi_pass wordpress:9000` ,wordpress is the name of your container keep that in mind.
+
+> (By default, PHP-FPM server listening on port 9000 that binds to 127.0.0.1 (localhost).)
+
+⚠️ NOTE : make sure you change this line on nginx config to `fastcgi_pass wordpress:9000` ,wordpress is the name of your container keep that in mind.
 now NGINX can send its work to PHP-FPM which waits in the background on Port 9000.
 
 nginx and wordpress containers are in isolated rooms , we need to put them in the same room to test the connection.
