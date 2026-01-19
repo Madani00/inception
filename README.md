@@ -63,7 +63,7 @@ graph LR
 # ✔️ Part 0: configs , dockerfiles ✔️
 ## 1.MariaDB
 **conf/50-server.cnf**
-```code
+```Ini, TOML
 [mysqld]
 
 user = mysql
