@@ -118,8 +118,8 @@ COPY tools/mariadb.sh .
 RUN chmod +x mariadb.sh
 
 ENTRYPOINT ["./mariadb.sh"]
-- [ ] creating this `/run/mysqld` in necessary, if doesn't exist or isn't, MariaDB will crash immediately.
-```
+
+- [ ] creating this `/run/mysqld` in necessary, if doesn't exist or isn't, MariaDB will crash immediately.```
 
 
 ## 2.Nginx
