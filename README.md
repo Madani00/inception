@@ -188,21 +188,42 @@ vi /etc/hosts
 # means if any command fails. script stop immediatelly
 set -e
 
-mkdir -p /var/www/html
-
-cd /var/www/html
-
+# WordPress command line interface (WP-CLI) : provides useful commands and utilities to install, configure, and manage a WordPress site. 
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 chmod +x wp-cli.phar
+mv wp-cli.phar /usr/local/bin/wp-cli
 
-php /var/www/html/wp-cli.phar  core download --allow-root
-php /var/www/html/wp-cli.phar  config create --dbname=wordpress --dbuser=wpuser --dbpass=password --dbhost=mariadb --allow-root
-php /var/www/html/wp-cli.phar  core install --url=localhost --title=inception --admin_user=admin --admin_password=admin --admin_email=admin@admin.com --allow-root
+mkdir -p /var/www/html && cd /var/www/html
 
+# Create the folder for the socket is required by php-fpm
+mkdir -p /run/php
+
+# Give the permissions to www-data user, group to access the folder
+# this is good practice to avoid permission issues, php-fpm comes with its own www-data user and group. 
+# that's why change the ownership of the folder
+chown -R www-data:www-data /run/php
+
+# Download the WordPress files.
+wp-cli core download --allow-root
+
+# Create the wp-config.php file with database connection details.
+wp-cli config create --dbname=$MADANI_DATABASE \
+							--dbuser=$MADANI_USER \
+							--dbpass=$MADANI_PASSWORD \
+							--dbhost=mariadb:3306 \
+							--allow-root
+
+# Install WordPress with site details.
+# wp-cli core install --url="localhost" \
+#					--title="Inception" \
+#					--admin_user="$MADANI_WP_ADMIN_USER" \
+#					--admin_password="$MADANI_WP_ADMIN_PASSWORD" \
+#					--admin_email="$MADANI_WP_ADMIN_EMAIL" \
+#					--allow-root
 
 # finally launch it
 # -F: PHP-FPM starts, puts itself in the background (daemon off)
-/usr/sbin/php-fpm7.3 -F
+exec /usr/sbin/php-fpm7.4 -F
 ```
 
 **Dockerfile**
@@ -215,7 +236,7 @@ RUN apt-get update &&  \
 	php-fpm	\
     php-mysql mariadb-client
 
-#COPY conf/www.conf /etc/php/7.3/fpm/pool.d/.
+# COPY conf/www.conf /etc/php/7.3/fpm/pool.d/.
 
 COPY tools/wordpress-php.sh .
 RUN chmod +x wordpress-php.sh
@@ -287,11 +308,12 @@ docker exec nginx sh -c 'echo "<h1>Hello from Docker! NGINX is working.</h1>" > 
 ```
 
 **Check the Browser**
-
 1. Go to https://localhost (or https://madani.42.fr if you set up your hosts file).
 2. Expect a Warning: You will see "Your connection is not private" (because of our self-signed certificate).
 3. Bypass it: Click Advanced -> Proceed to... (unsafe).
 4. Success: You should see "Hello from Docker! NGINX is working."
+
+
 
 ## 3. Test WordPress (The App)
 This one might complain about missing DB, but PHP-FPM should still start.
@@ -332,6 +354,26 @@ the only thing that you need to change in this config is a line  usually at (36 
 ```shell
 # The address on which to accept FastCGI requests.
 listen = wordpress:9000
+```
+
+**conf/www.conf**
+```code
+[www]
+
+user = www-data
+group = www-data
+
+listen = 0.0.0.0:9000
+
+pm = dynamic
+
+pm.max_children = 5
+
+pm.start_servers = 2
+
+pm.min_spare_servers = 1
+
+pm.max_spare_servers = 3
 ```
 
 > (By default, PHP-FPM server listening on port 9000 that binds to 127.0.0.1 (localhost).)
