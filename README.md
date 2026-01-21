@@ -506,7 +506,7 @@ Next steps: create the host directories if they don’t exist (/home/madani/data
 
 What to do (no code changes):
 
-1. Fill .env with all required vars: MADANI_ROOT_PASSWORD, MADANI_USER, MADANI_PASSWORD, MADANI_DATABASE, MADANI_WP_ADMIN_*.
+1. Fill `.env` with all required vars: `MADANI_ROOT_PASSWORD`, `MADANI_USER`, `MADANI_PASSWORD` ...
 
 
 2. Then docker compose down && Reset the bind-mounted data
