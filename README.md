@@ -416,12 +416,13 @@ both the containers should stay running so our test would be valid.
 If you do this:
 1. Go to https://localhost 
 2. if you are lucky like me you are gonna see a page like this:
+- [ ] (optional) if you want to see the CSS on this page, add this line to the file **nginx.conf**, you should place it inside the http block,
+`include /etc/nginx/mime.types;`
 ![alt text](<Screenshot from 2026-01-21 15-45-43.png>)
 which means **Success**: NGINX served the page & PHP executed the code.
 if you click submit you are gonna see this:
 ![alt text](<Screenshot from 2026-01-17 13-43-32.png>)
-- [] if you want to see the CSS on this page, add this line to the file **nginx.conf**, you should place it inside the http block,
-`include /etc/nginx/mime.types;`
+
 
 This is perfect! It means NGINX found the file, sent it to PHP, and PHP ran.
 WordPress needs a database to work, at least know its password, name and host.
