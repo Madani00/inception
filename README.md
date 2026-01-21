@@ -420,6 +420,8 @@ If you do this:
 which means **Success**: NGINX served the page & PHP executed the code.
 if you click submit you are gonna see this:
 ![alt text](<Screenshot from 2026-01-17 13-43-32.png>)
+- [] if you want to see the CSS on this page, add this line to the file **nginx.conf**, you should place it inside the http block,
+`include /etc/nginx/mime.types;`
 
 This is perfect! It means NGINX found the file, sent it to PHP, and PHP ran.
 WordPress needs a database to work, at least know its password, name and host.
