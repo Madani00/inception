@@ -492,6 +492,7 @@ wordpress-img
 if all goas well you are gonna see this page
 ![alt text](<Screenshot from 2026-01-18 17-12-17.png>)
 
+---
 
 # docker compose
 
