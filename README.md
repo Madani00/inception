@@ -519,10 +519,32 @@ The `-v` flag removes volumes, and `--build` forces image rebuild
 
 
 
+## final touch 
+let's create two users are created in the database: one administrator and one other user. to do so lets add the following to wordpress script:
+```bash
+# Create a new WordPress user.
+	wp-cli user create "$NEW_WP_USER" "$NEW_WP_USER_EMAIL" \
+						--user_pass="$NEW_WP_USER_PASSWORD" \
+						--role="author" \
+						--allow-root
+```
+now lets test the users on the browser.
+### 🖥️ Method 1: The Browser Test
 
 
+1. Go to https://eamchart.42.fr/wp-login.php.
+2. Test the Administrator (The Boss)
+    - Log in as your admin
+    - Look at the black menu on the left.
+    - Do you see the word "Plugins" or "Settings"?
+        - YES: ✅ Good. This user has "God Mode." They can change the website's brain.
 
-
+3. Test the Second User (The Employee)
+    - Log out of the admin account.
+    - Log in as your second user
+    - Look at the black menu on the left.
+    - The Key Check: Do you see the word "Plugins" or "Settings"?
+        - NO: ✅ PERFECT. This user is locked out of the dangerous stuff.
 
 
 

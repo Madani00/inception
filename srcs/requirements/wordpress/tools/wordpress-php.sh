@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# added so that we wait for the Mariadb database to be ready
 sleep 10
 # set -e
 
@@ -32,13 +33,18 @@ sleep 10
 								--dbhost=mariadb:3306 \
 								--allow-root
 	# Install WordPress with site details.
-	# wp-cli core install --url="localhost" \
-	# 					--title="Inception" \
-	# 					--admin_user="$MADANI_WP_ADMIN_USER" \
-	# 					--admin_password="$MADANI_WP_ADMIN_PASSWORD" \
-	# 					--admin_email="$MADANI_WP_ADMIN_EMAIL" \
-	# 					--allow-root
+	wp-cli core install --url="localhost" \
+						--title="Inception" \
+						--admin_user="$MADANI_WP_ADMIN_USER" \
+						--admin_password="$MADANI_WP_ADMIN_PASSWORD" \
+						--admin_email="$MADANI_WP_ADMIN_EMAIL" \
+						--allow-root
 
-# fi
+	# Create a new WordPress user.
+	wp-cli user create "$NEW_WP_USER" "$NEW_WP_USER_EMAIL" \
+						--user_pass="$NEW_WP_USER_PASSWORD" \
+						--role="author" \
+						--allow-root
+# fi	
 # finally launch it
 exec /usr/sbin/php-fpm7.4 -F
