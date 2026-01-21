@@ -1,20 +1,51 @@
-version: "3.8"
 
 services:
+  mariadb:
+    build: requirements/mariadb/.
+    container_name: mariadb
+    env_file: .env
+    networks:
+      - 42network
+    volumes:
+      - mariadb_data:/var/lib/mysql
   wordpress:
     build: requirements/wordpress/.
     container_name: wordpress
-    # depends_on:
-    #   - mariadb
+    depends_on:
+      - mariadb
+    env_file: .env
+    networks:
+      - 42network
+    volumes:
+      - wordpress_data:/var/www/html
   nginx:
-    build: requirements/wordpress/.
+    build: requirements/nginx/.
     container_name: nginx
     ports:
-      - "80:80"
-    # depends_on:
-    #   - wordpress
+      - "443:443"
+    depends_on:
+      - wordpress
+    networks:
+      - 42network
+    volumes:
+      - wordpress_data:/var/www/html
 
-  mariadb:
-    build: requirements/wordpress/.
-    container_name: mariadb
-    env_file: .env
+
+volumes:
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/eamchart/data/wordpress
+  
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/eamchart/data/mariadb
+
+networks:
+  42network:
+    driver: bridge

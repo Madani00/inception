@@ -99,7 +99,7 @@ EOF
 # Shutdown the temporary mariadb service 
 mysqladmin -u root -p"${MADANI_ROOT_PASSWORD}" shutdown
 
-# Start MariaDB in foreground
+# Start MariaDB again in foreground
 exec mysqld_safe
 ```
 
@@ -207,11 +207,11 @@ chown -R www-data:www-data /run/php
 wp-cli core download --allow-root
 
 # Create the wp-config.php file with database connection details.
-wp-cli config create --dbname=$MADANI_DATABASE \
-							--dbuser=$MADANI_USER \
-							--dbpass=$MADANI_PASSWORD \
-							--dbhost=mariadb:3306 \
-							--allow-root
+#wp-cli config create --dbname=$MADANI_DATABASE \
+#							--dbuser=$MADANI_USER \
+#							--dbpass=$MADANI_PASSWORD \
+#							--dbhost=mariadb:3306 \
+#							--allow-root
 
 # Install WordPress with site details.
 # wp-cli core install --url="localhost" \
@@ -332,18 +332,7 @@ all good, sure the connection will fail cause the mariadb container is not runni
 (and not connected via a Docker Network), this step is supposed to fail.
 
 
-# some usefull commands
-```bash
-# Check logs
-# When a container exits immediately, it usually "screamed" an error message, check it with
-docker logs test-db
 
-# to copy the config file from the container to your host, (wordpress is container name)
-docker cp wordpress:/etc/php/7.4/fpm/pool.d/www.conf .
-
-
-
-```
 
 
 # ✔️ Part 2: Advanced Checks NGINX & WORDPRESS & MariaDB ✔️
@@ -357,6 +346,7 @@ listen = wordpress:9000
 ```
 
 **conf/www.conf**
+
 ```code
 [www]
 
@@ -426,7 +416,7 @@ both the containers should stay running so our test would be valid.
 If you do this:
 1. Go to https://localhost 
 2. if you are lucky like me you are gonna see a page like this:
-![alt text](<Screenshot from 2026-01-17 10-27-53.png>)
+![alt text](<Screenshot from 2026-01-21 15-45-43.png>)
 which means **Success**: NGINX served the page & PHP executed the code.
 if you click submit you are gonna see this:
 ![alt text](<Screenshot from 2026-01-17 13-43-32.png>)
@@ -483,6 +473,7 @@ docker run --rm -d --name nginx --network test-net -v manual-test-vol:/var/www/h
 if all goes well you are gonna see this:
 ![alt text](<Screenshot from 2026-01-18 16-58-31.png>)
 
+now uncomment the line at (line 32 in **wordpress-php.sh**) so we can Install WordPress with site details automatically, now test again.
 
 ```bash
 # create the images again cause we changed the script
@@ -497,6 +488,71 @@ wordpress-img
 ```
 if all goas well you are gonna see this page
 ![alt text](<Screenshot from 2026-01-18 17-12-17.png>)
+
+
+# docker compose
+
+
+Next steps: create the host directories if they don’t exist (/home/madani/data/wordpress and /home/madani/data/mariadb), then docker compose down && docker compose up --build. Double-check your .env values for the database and WordPress credentials.
+
+
+
+2. Clean your volumes - Remove old WordPress and MariaDB data:
+
+
+What to do (no code changes):
+
+1. Fill .env with all required vars: MADANI_ROOT_PASSWORD, MADANI_USER, MADANI_PASSWORD, MADANI_DATABASE, MADANI_WP_ADMIN_*.
+
+
+2. Then docker compose down && Reset the bind-mounted data
+```bash
+
+docker compose down -v
+rm -rf /home/eamchart/data/mariadb/* /home/eamchart/data/wordpress/*
+docker compose up --build
+```
+The `-v` flag removes volumes, and `--build` forces image rebuild
+
+
+
+
+
+
+
+
+
+
+
+
+# some usefull commands
+```bash
+# Check logs
+# When a container exits immediately, it usually "screamed" an error message, check it with
+docker logs test-db
+
+# to copy the config file from the container to your host, (wordpress is container name)
+docker cp wordpress:/etc/php/7.4/fpm/pool.d/www.conf .
+
+# to remove all the stopped containers
+docker container prune
+
+# clean up all unused containers, images & networks
+docker system prune
+
+# build an image completely from scratch without using any cache
+docker build --no-cache -t your-image-name .
+
+```
+
+
+
+
+
+
+
+
+
 
 
 

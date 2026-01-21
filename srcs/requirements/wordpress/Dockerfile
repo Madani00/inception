@@ -12,5 +12,3 @@ COPY tools/wordpress-php.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/wordpress-php.sh
 
 ENTRYPOINT ["wordpress-php.sh"]
-
-
