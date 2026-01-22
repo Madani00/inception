@@ -30,7 +30,6 @@ services:
     volumes:
       - wordpress_data:/var/www/html
 
-
 volumes:
   wordpress_data:
     driver: local

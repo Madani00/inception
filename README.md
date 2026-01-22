@@ -232,11 +232,11 @@ FROM debian:bullseye-slim
 
 RUN apt-get update &&  \
     apt-get install -y curl  \
-    php7.3 \
-	php-fpm	\
-    php-mysql mariadb-client
+    php7.4 \
+	php7.4-fpm	\
+    php7.4-mysql mariadb-client
 
-# COPY conf/www.conf /etc/php/7.3/fpm/pool.d/.
+COPY conf/www.conf /etc/php/7.4/fpm/pool.d/.
 
 COPY tools/wordpress-php.sh .
 RUN chmod +x wordpress-php.sh
@@ -495,7 +495,58 @@ if all goas well you are gonna see this page
 ---
 
 # docker compose
+create the docker compose
+```docker-compose
+services:
+  mariadb:
+    build: requirements/mariadb/.
+    container_name: mariadb
+    env_file: .env
+    networks:
+      - 42network
+    volumes:
+      - mariadb_data:/var/lib/mysql
+  wordpress:
+    build: requirements/wordpress/.
+    container_name: wordpress
+    depends_on:
+      - mariadb
+    env_file: .env
+    networks:
+      - 42network
+    volumes:
+      - wordpress_data:/var/www/html
+  nginx:
+    build: requirements/nginx/.
+    container_name: nginx
+    ports:
+      - "443:443"
+    depends_on:
+      - wordpress
+    networks:
+      - 42network
+    volumes:
+      - wordpress_data:/var/www/html
 
+volumes:
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/eamchart/data/wordpress
+  
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/eamchart/data/mariadb
+
+networks:
+  42network:
+    driver: bridge
+```
 
 Next steps: create the host directories if they don’t exist (/home/madani/data/wordpress and /home/madani/data/mariadb), then docker compose down && docker compose up --build. Double-check your .env values for the database and WordPress credentials.
 
@@ -521,7 +572,7 @@ The `-v` flag removes volumes, and `--build` forces image rebuild
 
 
 ## final touch 
-let's create two users are created in the database: one administrator and one other user. to do so lets add the following to wordpress script:
+the subject told us to create 2 users we previously create the admin now it's time to the other other. to do so lets add the following to wordpress script:
 ```bash
 # Create a new WordPress user.
 	wp-cli user create "$NEW_WP_USER" "$NEW_WP_USER_EMAIL" \
