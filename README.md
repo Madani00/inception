@@ -85,7 +85,7 @@ mysqld_safe &  #  or mariadbd-safe &
 # gives MariaDB time to fully initialize and create the socket file (very important)
 sleep 5
 
-# Set root password (first time root has no password)
+# Set root password with ALTER command (first time root has no password)
 mysql -u root <<EOF
 CREATE DATABASE IF NOT EXISTS \`${MADANI_DATABASE}\`;
 CREATE USER IF NOT EXISTS '${MADANI_USER}'@'%' IDENTIFIED BY '${MADANI_PASSWORD}';
@@ -177,6 +177,8 @@ vi /etc/hosts
 
 127.0.0.1   eamchart.42.fr
 ```
+also change this `server_name localhost;` to `server_name eamchart.42.fr;`
+- [ ] it will work with both we just changed it because that's the way it should be.
 
 
 ## 3. WordPress
@@ -447,14 +449,16 @@ docker rm nginx wordpress mariadb
 docker volume rm manual-test-vol
 docker network rm test-net
 
-# Re-create Network and Volume
-docker network create test-net
-docker volume create manual-test-vol
 ```
 
 ### 🛠️ Step 2: Start all
 
 ```bash
+
+# Re-create Network and Volume
+docker network create test-net
+docker volume create manual-test-vol
+
 # again create the images
 docker build -t mariadb-img .
 docker build -t wordpress-img .
@@ -552,11 +556,6 @@ Next steps: create the host directories if they don’t exist (/home/madani/data
 
 
 
-2. Clean your volumes - Remove old WordPress and MariaDB data:
-
-
-What to do (no code changes):
-
 1. Fill `.env` with all required vars: `MADANI_ROOT_PASSWORD`, `MADANI_USER`, `MADANI_PASSWORD` ...
 
 
@@ -566,10 +565,17 @@ What to do (no code changes):
 docker compose down -v
 rm -rf /home/eamchart/data/mariadb/* /home/eamchart/data/wordpress/*
 docker compose up --build
+
+docker compose down 
+docker compose up
 ```
 The `-v` flag removes volumes, and `--build` forces image rebuild
 
-
+3. debug maridb
+```bash
+docker compose -f 'srcs/docker-compose.yml' up 'mariadb'
+rm -rf /home/eamchart/data/mariadb/* /home/eamchart/data/wordpress/*
+```
 
 ## final touch 
 the subject told us to create 2 users we previously create the admin now it's time to the other other. to do so lets add the following to wordpress script:
@@ -601,6 +607,30 @@ now lets test the users on the browser.
 
 
 
+# 1) Rename the user and its group
+sudo usermod -l NEWNAME -d /home/NEWNAME -m OLDNAME
+sudo groupmod -n NEWNAME OLDNAME
+
+# 2) Fix ownership of the home
+sudo chown -R NEWNAME:NEWNAME /home/NEWNAME
+
+
+
+
+
+
+
+## errors 
+`mariadb | ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/run/mysqld/mysqld.sock' (111)`
+The socket error happens because the script tries to connect before MariaDB is fully ready. We need to wait for the socket file to exist and MySQL to be listening. 
+
+THE PROBLEM WAS:
+the mariaDB volume `/home/eamchart/data/..` should have the user `eamchart` premission so you can write and read from it
+
+
+ found the issue! The problem is that the initialization script only runs when MariaDB is first started. On subsequent restarts with existing data, it tries to connect to MySQL without credentials, but the password was already set.
+`The fix is to modify the startup script to check if MariaDB is already initialized before running the setup commands.`
+
 
 # some usefull commands
 ```bash
@@ -620,6 +650,10 @@ docker system prune
 # build an image completely from scratch without using any cache
 docker build --no-cache -t your-image-name .
 
+# Test HTTP to HTTPS redirect
+curl -I http://asadiqui.42.fr
+curl -k -I https://asadiqui.42.fr
+
 ```
 
 
@@ -630,19 +664,3 @@ docker build --no-cache -t your-image-name .
 
 
 
-
-
-
-# wordpress error why??
-Error: YIKES! It looks like you're running this as root. You probably meant to run this as the user that your WordPress installation exists under.
-
-If you REALLY mean to run this as root, we won't stop you, but just bear in mind that any code on this site will then have full control of your server, making it quite DANGEROUS.
-
-If you'd like to continue as root, please run this again, adding this flag:  --allow-root
-
-If you'd like to run it as the user that this site is under, you can run the following to become the respective user:
-
-    sudo -u USER -i -- wp <command>
-
-
-`- if you see an error that says "404 Not Found", that means nginx is still looking at its own /var/www/html, which is empty.`

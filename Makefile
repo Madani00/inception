@@ -1,0 +1,37 @@
+COMPOSE = docker compose
+COMPOSE_FILE = srcs/docker-compose.yml
+
+
+all: build up
+
+# build the docker images
+build: setup
+	$(COMPOSE) -f $(COMPOSE_FILE) build
+
+# do not forget -d 
+up:
+	$(COMPOSE) -f $(COMPOSE_FILE) up
+
+down:
+	$(COMPOSE) -f $(COMPOSE_FILE) down
+
+restart: down up
+
+
+logs:
+	$(COMPOSE) -f $(COMPOSE_FILE) logs -f
+
+clean:
+	$(COMPOSE) -f $(COMPOSE_FILE) down -v
+
+fclean: clean
+	docker system prune -af
+
+re: fclean all
+
+setup:
+	@mkdir -p /home/eamchart/data/wordpress
+	@mkdir -p /home/eamchart/data/mariadb
+
+
+.PHONY: all build up down restart logs clean fclean re
