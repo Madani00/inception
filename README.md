@@ -609,25 +609,22 @@ now lets test the users on the browser.
 
 
 
-# 1) Rename the user and its group
-sudo usermod -l NEWNAME -d /home/NEWNAME -m OLDNAME
-sudo groupmod -n NEWNAME OLDNAME
-
-# 2) Fix ownership of the home
-sudo chown -R NEWNAME:NEWNAME /home/NEWNAME
-
-
-
 
 ## final touch (fix errors)
 
 1. 
+
 `mariadb | ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/run/mysqld/mysqld.sock' (111)`
 The socket error happens because the script tries to connect before MariaDB is fully ready. We need to wait for the socket file to exist and MySQL to be listening.
 to fix this i added a condition to wait for Mariadb to be ready 
 ---
 
-2. the mariaDB volume `/home/eamchart/data/..` should have the user `eamchart` premission so you can write and read from it
+2. 
+the mariaDB volume `/home/eamchart/data/..` should have the user `eamchart` premission so you can write and read from it
+```yaml
+# Fix ownership of the home
+sudo chown -R eamchart:eamchart /home/eamchart/data
+```
 ---
 
 3. 
