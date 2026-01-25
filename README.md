@@ -611,12 +611,13 @@ now lets test the users on the browser.
 
 
 ## final touch (fix errors)
-
+hi 
 1. 
 
-**mariadb | ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/run/mysqld/mysqld.sock' (111)**
+
 The socket error happens because the script tries to connect before MariaDB is fully ready. We need to wait for the socket file to exist and MySQL to be listening.
 to fix this i added a condition to wait for Mariadb to be ready in wordpress script
+
 ---
 
 2. 
