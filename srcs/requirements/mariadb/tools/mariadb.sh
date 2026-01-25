@@ -2,6 +2,39 @@
 
 set -e
 
+
+
+# Check if MariaDB is already initialized
+if [ ! -d "/var/lib/mysql/${MADANI_DATABASE}" ]; then
+	
+echo "First time initialization MariaDB..."
+
+mysqld_safe &
+
+sleep 5
+	
+mysql -u root <<EOF
+CREATE DATABASE IF NOT EXISTS \`${MADANI_DATABASE}\`;
+
+CREATE USER IF NOT EXISTS '${MADANI_USER}'@'%' IDENTIFIED BY '${MADANI_PASSWORD}';
+
+GRANT ALL PRIVILEGES ON \`${MADANI_DATABASE}\`.* TO '${MADANI_USER}'@'%';
+
+ALTER USER 'root'@'localhost' IDENTIFIED BY '${MADANI_ROOT_PASSWORD}';
+
+FLUSH PRIVILEGES;
+EOF
+
+mysqladmin -u root -p"${MADANI_ROOT_PASSWORD}" shutdown
+
+fi
+
+
+exec mysqld_safe
+
+
+
+
 # # Check if MariaDB is already initialized
 # if [ ! -d "/var/lib/mysql/mysql" ]; then
 # 	# First time initialization
@@ -26,26 +59,24 @@ set -e
 # exec mysqld_safe
 
 
-
-mysqld_safe &
-
-sleep 5
+# mysqld_safe &
+# sleep 5
 	
-mysql -u root <<EOF
-CREATE DATABASE IF NOT EXISTS \`${MADANI_DATABASE}\`;
+# mysql -u root <<EOF
+# CREATE DATABASE IF NOT EXISTS \`${MADANI_DATABASE}\`;
 
-CREATE USER IF NOT EXISTS '${MADANI_USER}'@'%' IDENTIFIED BY '${MADANI_PASSWORD}';
+# CREATE USER IF NOT EXISTS '${MADANI_USER}'@'%' IDENTIFIED BY '${MADANI_PASSWORD}';
 
-GRANT ALL PRIVILEGES ON \`${MADANI_DATABASE}\`.* TO '${MADANI_USER}'@'%';
+# GRANT ALL PRIVILEGES ON \`${MADANI_DATABASE}\`.* TO '${MADANI_USER}'@'%';
 
-ALTER USER 'root'@'localhost' IDENTIFIED BY '${MADANI_ROOT_PASSWORD}';
+# ALTER USER 'root'@'localhost' IDENTIFIED BY '${MADANI_ROOT_PASSWORD}';
 
-FLUSH PRIVILEGES;
-EOF
+# FLUSH PRIVILEGES;
+# EOF
 
-mysqladmin -u root -p"${MADANI_ROOT_PASSWORD}" shutdown
+# mysqladmin -u root -p"${MADANI_ROOT_PASSWORD}" shutdown
 
 
-exec mysqld_safe
+# exec mysqld_safe
 
 
