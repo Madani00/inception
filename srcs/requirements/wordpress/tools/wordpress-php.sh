@@ -38,20 +38,16 @@ else
 								--dbhost=mariadb:3306 \
 								--allow-root
 	# Install WordPress with site details.
-	wp-cli core install --url="localhost" \
-						--title="Inception" \
+	wp-cli core install --url="$WP_URL" \
+						--title="$WP_TITLE" \
 						--admin_user="$MADANI_WP_ADMIN_USER" \
 						--admin_password="$MADANI_WP_ADMIN_PASSWORD" \
 						--admin_email="$MADANI_WP_ADMIN_EMAIL" \
 						--allow-root
 
 	# Create a new WordPress user.
-	# wp-cli user create "$NEW_WP_USER" "$NEW_WP_USER_EMAIL" \
-	# 					--user_pass="$NEW_WP_USER_PASSWORD" \
-	# 					--role="author" \
-	# 					--allow-root
-	wp-cli user create "mehdi" "mehdi13@gmail.com" \
-						--user_pass="mehdi12345" \
+	wp-cli user create "$NEW_WP_USER" "$NEW_WP_USER_EMAIL" \
+						--user_pass="$NEW_WP_USER_PASSWORD" \
 						--role="author" \
 						--allow-root
 
