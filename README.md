@@ -615,10 +615,10 @@ now lets test the users on the browser.
 1. 
 
 The socket error happens because the script tries to connect before MariaDB is fully ready. We need to wait for the socket file to exist and MySQL to be listening.
-to fix this i added a condition to wait for Mariadb to be ready in wordpress script
 
 `**mariadb | ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/run/mysqld/mysqld.sock' (111)**`
 
+to fix this you can eather add a condition to wait for Mariadb to be ready in wordpress script or you can tell Docker Compose to monitor MariaDB's health with `healthcheck`
 ---
 
 2. 

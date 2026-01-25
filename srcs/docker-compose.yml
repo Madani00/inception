@@ -8,11 +8,18 @@ services:
       - 42network
     volumes:
       - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   wordpress:
     build: requirements/wordpress/.
     container_name: wordpress
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
+
     env_file: .env
     networks:
       - 42network

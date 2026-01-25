@@ -27,6 +27,10 @@ clean:
 fclean: clean
 	docker system prune -af
 
+# remove the persistent data
+fcleanPRO : fclean
+	sudo rm -rf /home/eamchart/data/wordpress/* /home/eamchart/data/mariadb/*
+
 re: fclean all
 
 setup:
