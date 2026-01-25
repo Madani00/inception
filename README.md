@@ -620,16 +620,19 @@ sudo chown -R NEWNAME:NEWNAME /home/NEWNAME
 
 
 ## final touch (fix errors)
+
 1. 
 `mariadb | ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/run/mysqld/mysqld.sock' (111)`
 The socket error happens because the script tries to connect before MariaDB is fully ready. We need to wait for the socket file to exist and MySQL to be listening.
 to fix this i added a condition to wait for Mariadb to be ready 
 ---
-2. 
-the mariaDB volume `/home/eamchart/data/..` should have the user `eamchart` premission so you can write and read from it
+
+2. the mariaDB volume `/home/eamchart/data/..` should have the user `eamchart` premission so you can write and read from it
 ---
+
 3. 
-![alt text](<Screenshot from 2026-01-21 14-31-30.png>)
+![alt text](<Screenshot from 2026-01-22 11-48-47.png>)
+
 i added a condition in both script of mariadb & wordpress to check if the wordpress if already exists, also the same thing for the mariadb data
 
 
