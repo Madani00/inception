@@ -9,7 +9,7 @@ services:
     volumes:
       - mariadb_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MADANI_USER}", "-p${MADANI_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -19,7 +19,6 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
-
     env_file: .env
     networks:
       - 42network

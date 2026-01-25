@@ -19,7 +19,7 @@ restart: down up
 
 
 logs:
-	$(COMPOSE) -f $(COMPOSE_FILE) logs -f
+	$(COMPOSE) -f $(COMPOSE_FILE) logs
 
 clean:
 	$(COMPOSE) -f $(COMPOSE_FILE) down -v
