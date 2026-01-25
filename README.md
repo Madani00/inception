@@ -177,7 +177,7 @@ vi /etc/hosts
 
 127.0.0.1   eamchart.42.fr
 ```
-also change this `server_name localhost;` to `server_name eamchart.42.fr;`
+also in **conf/nginx.conf** change this `server_name localhost;` to `server_name eamchart.42.fr;`
 - [ ] it will work with both we just changed it because that's the way it should be.
 
 
@@ -577,7 +577,7 @@ docker compose -f 'srcs/docker-compose.yml' up 'mariadb'
 rm -rf /home/eamchart/data/mariadb/* /home/eamchart/data/wordpress/*
 ```
 
-## final touch 
+## add users
 the subject told us to create 2 users we previously create the admin now it's time to the other other. to do so lets add the following to wordpress script:
 ```bash
 # Create a new WordPress user.
@@ -607,6 +607,8 @@ now lets test the users on the browser.
 
 
 
+
+
 # 1) Rename the user and its group
 sudo usermod -l NEWNAME -d /home/NEWNAME -m OLDNAME
 sudo groupmod -n NEWNAME OLDNAME
@@ -617,15 +619,19 @@ sudo chown -R NEWNAME:NEWNAME /home/NEWNAME
 
 
 
-
-
-
-## errors 
+## final touch (fix errors)
+1. 
 `mariadb | ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/run/mysqld/mysqld.sock' (111)`
-The socket error happens because the script tries to connect before MariaDB is fully ready. We need to wait for the socket file to exist and MySQL to be listening. 
-
-THE PROBLEM WAS:
+The socket error happens because the script tries to connect before MariaDB is fully ready. We need to wait for the socket file to exist and MySQL to be listening.
+to fix this i added a condition to wait for Mariadb to be ready 
+---
+2. 
 the mariaDB volume `/home/eamchart/data/..` should have the user `eamchart` premission so you can write and read from it
+---
+3. 
+![alt text](<Screenshot from 2026-01-21 14-31-30.png>)
+i added a condition in both script of mariadb & wordpress to check if the wordpress if already exists, also the same thing for the mariadb data
+
 
 
  found the issue! The problem is that the initialization script only runs when MariaDB is first started. On subsequent restarts with existing data, it tries to connect to MySQL without credentials, but the password was already set.

@@ -2,8 +2,6 @@
 
 set -e
 
-
-
 # Check if MariaDB is already initialized
 if [ ! -d "/var/lib/mysql/${MADANI_DATABASE}" ]; then
 	
@@ -29,6 +27,7 @@ mysqladmin -u root -p"${MADANI_ROOT_PASSWORD}" shutdown
 
 fi
 
+echo "MariaDB is READY."
 
 exec mysqld_safe
 
