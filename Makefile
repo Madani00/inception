@@ -37,5 +37,4 @@ setup:
 	mkdir -p /home/eamchart/data/wordpress
 	mkdir -p /home/eamchart/data/mariadb
 
-
-.PHONY: all build up down restart logs clean fclean re
+.PHONY: all build up down restart logs clean fclean fcleanall re setup
