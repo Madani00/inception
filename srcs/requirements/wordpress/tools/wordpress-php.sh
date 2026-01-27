@@ -38,7 +38,7 @@ else
 								--dbhost=mariadb:3306 \
 								--allow-root
 	# Install WordPress with site details.
-	wp-cli core install --url="$WP_URL" \
+	wp-cli core install --url="$DOMAIN_NAME" \
 						--title="$WP_TITLE" \
 						--admin_user="$MADANI_WP_ADMIN_USER" \
 						--admin_password="$MADANI_WP_ADMIN_PASSWORD" \
