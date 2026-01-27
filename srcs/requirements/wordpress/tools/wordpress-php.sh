@@ -28,6 +28,8 @@ else
 
 	mkdir -p /var/www/html && cd /var/www/html
 
+	chmod 755 /var/www/html && chown -R www-data:www-data /var/www/html
+
 	# Download the WordPress files.
 	wp-cli core download --allow-root
 
@@ -53,4 +55,5 @@ else
 
 fi	
 # finally launch it
-exec /usr/sbin/php-fpm7.4 -F
+
+exec /usr/sbin/php-fpm8.2 -F
