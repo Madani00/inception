@@ -606,6 +606,18 @@ now lets test the users on the browser.
         - NO: ✅ PERFECT. This user is locked out of the dangerous stuff.
 
 
+### 💽 5. MariaDB & Persistence test
+- The "Delete" Test:
+  1. Create a post in WordPress.
+  2. Run docker compose down and Run docker compose up -d.
+  3. Is the post still there? (It must be there).
+
+- The "Volume Clean" Test:
+  1. Run docker compose down -v (removes volumes).
+  2. Run docker compose up -d.
+  3. Is the WordPress installation back to the "Language Selection" screen? (It must be empty).
+
+
 
 
 

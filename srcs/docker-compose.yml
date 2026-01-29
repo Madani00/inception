@@ -38,6 +38,7 @@ services:
     volumes:
       - wordpress_data:/var/www/html
     restart: always
+
 volumes:
   wordpress_data:
     driver: local
