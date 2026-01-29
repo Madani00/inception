@@ -183,6 +183,29 @@ also in **conf/nginx.conf** change this `server_name localhost;` to `server_name
 
 ## 3. WordPress
 
+**conf/www.conf**
+```Ini, TOML
+[www]
+
+user = www-data
+group = www-data
+
+; The address on which to accept FastCGI requests.
+listen = 0.0.0.0:9000
+
+pm = dynamic
+
+pm.max_children = 5
+
+pm.start_servers = 2
+
+pm.min_spare_servers = 1
+
+pm.max_spare_servers = 3
+
+```
+this configuration with `listen = 0.0.0.0:9000` should work fine, but using `listen = wordpress:9000` or even just `listen = 9000` would be more aligned with Docker best practices.
+
 **wordpress-php.sh**
 ```bash
 #!/bin/bash
@@ -650,6 +673,17 @@ i added a condition in both script of mariadb & wordpress to check if the wordpr
 
 
 # some best practices
+- in the configuration file of wordpress we changed:
+```bash
+# CRITICAL: listen on port 9000 on all interfaces
+listen = 0.0.0.0:9000
+```
+to
+```bash
+# to listen on port 9000 of the wordpress hostname
+listen = wordpress:9000
+```
+
 - EXPOSE THE port inside the cotainer so other container can see it
 - add in docker compose `start: always` in case one of cotainer fails it starts again
 - Layer Optimization (small images): you should always combine commands that are logically related into a single RUN instruction. This follows the Principle of Least Privilege for Disk Space.
