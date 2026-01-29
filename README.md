@@ -105,7 +105,7 @@ exec mysqld_safe
 
 **Dockerfile**
 ```Dockerfile
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 RUN apt-get update && apt-get install mariadb-server -y
 
@@ -120,8 +120,8 @@ RUN chmod +x mariadb.sh
 ENTRYPOINT ["./mariadb.sh"]
 ```
 - [ ] creating this `/run/mysqld` in necessary, if doesn't exist or isn't, MariaDB will crash immediately.```
-
-
+> ⚠️ subject said:  the containers must be built either from the penultimate stable which means the version before the current stable one.
+that's why i picked `debian:bookworm-slim`
 ## 2.Nginx
 
 **conf/nginx.conf**
@@ -158,7 +158,7 @@ http {
 
 **Dockerfile**
 ```Dockerfile
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 RUN apt-get update && \
     apt-get install nginx openssl -y && \
@@ -230,20 +230,21 @@ exec /usr/sbin/php-fpm7.4 -F
 
 **Dockerfile**
 ```Dockerfile
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 RUN apt-get update &&  \
     apt-get install -y curl  \
-    php7.4 \
-	php7.4-fpm	\
-    php7.4-mysql mariadb-client
+    php8.2 \
+	php8.2-fpm	\
+    php8.2-mysql mariadb-client 
 
-COPY conf/www.conf /etc/php/7.4/fpm/pool.d/.
+COPY conf/www.conf /etc/php/8.2/fpm/pool.d/.
 
 COPY tools/wordpress-php.sh .
 RUN chmod +x wordpress-php.sh
 
 CMD ["./wordpress-php.sh"]
+
 ```
 
 
@@ -636,6 +637,21 @@ i added a condition in both script of mariadb & wordpress to check if the wordpr
 
 
 
+# some best practices
+- EXPOSE THE port inside the cotainer so other container can see it
+- add in docker compose `start: always` in case one of cotainer fails it starts again
+- Layer Optimization (small images): you should always combine commands that are logically related into a single RUN instruction. This follows the Principle of Least Privilege for Disk Space.
+
+```docker
+RUN apt-get update && apt-get install -y \
+    wget \
+    php7.3 \
+    && rm -rf /var/lib/apt/lists/*
+```
+(`rm -rf`) deletes the temporary package lists, making your container even smaller.
+- if an error happens redirect it to a youtube video lol
+- add `.dockerignore`
+
 # some usefull commands
 ```bash
 # Check logs
@@ -655,8 +671,11 @@ docker system prune
 docker build --no-cache -t your-image-name .
 
 # Test HTTP to HTTPS redirect
-curl -I http://asadiqui.42.fr
-curl -k -I https://asadiqui.42.fr
+curl -I http://eamchart.42.fr
+curl -k -I https://eamchart.42.fr
+
+# to list processes running inside of each service (container).
+docker-compose top 
 
 ```
 

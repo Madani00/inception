@@ -15,8 +15,10 @@ up:
 down:
 	$(COMPOSE) -f $(COMPOSE_FILE) down
 
-restart: down up
-
+# you can use this 
+# restart: down up
+restart:
+	$(COMPOSE) -f $(COMPOSE_FILE) restart
 
 logs:
 	$(COMPOSE) -f $(COMPOSE_FILE) logs

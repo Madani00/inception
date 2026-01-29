@@ -9,6 +9,8 @@ RUN mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld
 COPY tools/mariadb.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/mariadb.sh 
 
+EXPOSE 3306
+
 ENTRYPOINT ["mariadb.sh"]
 
 
