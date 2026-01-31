@@ -62,7 +62,7 @@ graph LR
 
 # ✔️ Part 0: configs , dockerfiles ✔️
 ## 1.MariaDB
-[1.MariaDB](./mariadb/README.md)
+[1.MariaDB](./srcs/requirements/mariadb/README.md)
 ## 2.Nginx
 
 **conf/nginx.conf**
