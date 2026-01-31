@@ -62,14 +62,14 @@ graph LR
 
 # ✔️ Part 0: configs , dockerfiles ✔️
 ## 1.MariaDB
-[1 --> MariaDB](./srcs/requirements/mariadb/README.md)
+[check this link --> MariaDB](./srcs/requirements/mariadb/README.md)
 
 ## 2.Nginx
-[2 --> Nginx](./srcs/requirements/nginx/README.md)
+[check this link --> Nginx](./srcs/requirements/nginx/README.md)
 
 
 ## 3. WordPress
-[3 --> wordpress](./srcs/requirements/wordpress/README.md)
+[check this link --> wordpress](./srcs/requirements/wordpress/README.md)
 
 
 
