@@ -246,10 +246,10 @@ If you do this:
 2. if you are lucky like me you are gonna see a page like this:
 - [ ] (optional) if you want to see the CSS on this page, add this line to the file **nginx.conf**, you should place it inside the http block,
 `include /etc/nginx/mime.types;`
-![alt text](<Screenshot from 2026-01-21 15-45-43.png>)
+![alt text](<.images/Screenshot from 2026-01-21 15-45-43.png>)
 which means **Success**: NGINX served the page & PHP executed the code.
 if you click submit you are gonna see this:
-![alt text](<Screenshot from 2026-01-17 13-43-32.png>)
+![alt text](<.images/Screenshot from 2026-01-17 13-43-32.png>)
 
 
 This is perfect! It means NGINX found the file, sent it to PHP, and PHP ran.
@@ -304,7 +304,7 @@ docker run --rm -d --name nginx --network test-net -v manual-test-vol:/var/www/h
 
 ```
 if all goes well you are gonna see this:
-![alt text](<Screenshot from 2026-01-18 16-58-31.png>)
+![alt text](<.images/Screenshot from 2026-01-18 16-58-31.png>)
 
 now uncomment the line at (line 32 in **wordpress-php.sh**) so we can Install WordPress with site details automatically, now test again.
 
@@ -320,7 +320,7 @@ docker run --rm -d --name wordpress  --network test-net -v manual-test-vol:/var/
 wordpress-img 
 ```
 if all goas well you are gonna see this page
-![alt text](<Screenshot from 2026-01-18 17-12-17.png>)
+![alt text](<.images/Screenshot from 2026-01-18 17-12-17.png>)
 
 ---
 
@@ -468,7 +468,7 @@ sudo chown -R eamchart:eamchart /home/eamchart/data
 ---
 
 3. 
-![alt text](<Screenshot from 2026-01-22 11-48-47.png>)
+![alt text](<.images/Screenshot from 2026-01-22 11-48-47.png>)
 
 i added a condition in both script of mariadb & wordpress to check if the wordpress if already exists, also the same thing for the MariaDB check if it is already initialized before running the setup commands
 

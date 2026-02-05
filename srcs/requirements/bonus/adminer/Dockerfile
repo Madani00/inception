@@ -3,9 +3,9 @@ FROM debian:bookworm-slim
 RUN apt-get update -y \
     && apt-get install -y wget php php-mysqli
 
-COPY ./tools/setup.sh /setup.sh
+COPY ./tools/run.sh .
 
-RUN chmod +x /setup.sh && /setup.sh
+RUN chmod +x run.sh && ./run.sh
 
 EXPOSE 8080
 
