@@ -527,6 +527,18 @@ docker-compose top
 
 ```
 
+http://localhost/portfolio/ 
+
+http://localhost:8081/
+
+## to access Adminer:
+http://localhost:8080
+System: MySQL
+Server: mariadb
+Username: value of MADANI_USER
+Password: value of MADANI_PASSWORD
+Database: value of MADANI_DATABASE (optional)
+
 
 
 

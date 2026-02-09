@@ -19,6 +19,12 @@ chown -R www-data:www-data /run/php
 if [ -f /var/www/html/wp-config.php ]; then
 	echo "WordPress is already installed."
 
+	# Ensure Redis Object Cache is installed and enabled on existing installs.
+	# wp-cli plugin install redis-cache --activate --allow-root
+	# wp-cli config set WP_REDIS_HOST redis --allow-root
+	# wp-cli config set WP_REDIS_PORT 6379 --raw --allow-root
+	# wp-cli redis enable --allow-root
+
 else
 	echo "Installing WordPress..."
 # WordPress command line interface (WP-CLI) : provides useful commands and utilities to install, configure, and manage a WordPress site. 
@@ -52,6 +58,15 @@ else
 						--user_pass="$NEW_WP_USER_PASSWORD" \
 						--role="author" \
 						--allow-root
+
+	# Install the redis-cache plugin.
+	wp-cli plugin install redis-cache --activate --allow-root
+	# Configure the Redis Object Cache plugin to connect to the Redis server.
+	wp-cli config set WP_REDIS_HOST redis --allow-root
+	wp-cli config set WP_REDIS_PORT 6379 --raw --allow-root
+	# Enable the Redis Object Cache plugin for WordPress.
+	wp-cli redis enable --allow-root
+
 
 fi	
 # finally launch it

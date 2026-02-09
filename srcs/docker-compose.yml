@@ -39,6 +39,57 @@ services:
       - wordpress_data:/var/www/html
     restart: always
 
+  adminer:
+    build: requirements/bonus/adminer
+    container_name: adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+    networks:
+      - 42network
+    restart: always
+  
+  ftp:
+    build: requirements/bonus/ftp
+    container_name: ftp
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    # depends_on:
+    #   - wordpress
+    #   - mariadb
+    env_file: .env
+    networks:
+      - 42network
+    volumes:
+      - wordpress_data:/var/www/html
+    restart: always
+  
+  redis:
+    build: requirements/bonus/redis
+    container_name: redis
+    # depends_on:
+    #   - wordpress
+    #   - mariadb
+    networks:
+      - 42network
+    restart: always
+
+  static:
+    build: requirements/bonus/static
+    container_name: static
+    ports:
+      - "8081:80"
+    # depends_on:
+    #   - wordpress
+    #   - mariadb
+    networks:
+      - 42network
+    volumes:
+      - wordpress_data:/var/www/html
+    restart: always
+
 volumes:
   wordpress_data:
     driver: local
