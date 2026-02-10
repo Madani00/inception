@@ -1,7 +1,8 @@
 FROM debian:bookworm-slim
 
 RUN apt-get update -y \
-    && apt-get install -y vsftpd ftp gettext-base
+    && apt-get install -y vsftpd gettext-base \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY conf/vsftpd.conf /etc/vsftpd.conf
 

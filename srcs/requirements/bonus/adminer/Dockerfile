@@ -1,7 +1,8 @@
 FROM debian:bookworm-slim
 
 RUN apt-get update -y \
-    && apt-get install -y wget php php-mysqli
+    && apt-get install -y wget php php-mysqli \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY ./tools/run.sh .
 

@@ -1,12 +1,6 @@
 #!/bin/bash
 
-# set -e
-
-# added so that we wait for the Mariadb database to be ready
-# until mysql -h mariadb -u"$MADANI_USER" -p"$MADANI_PASSWORD" "$MADANI_DATABASE" -e "SELECT 1" >/dev/null 2>&1; do
-#     echo "		Waiting for MariaDB to be READY"
-#     sleep 2
-# done
+set -e
 
 # Create the folder for the socket is required by php-fpm
 mkdir -p /run/php
