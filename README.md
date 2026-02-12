@@ -526,10 +526,16 @@ curl -k -I https://eamchart.42.fr
 docker-compose top 
 
 ```
+#  Use NGINX as a reverse proxy to route paths to backend services:
+https://eamchart.42.fr/portainer/
+https://eamchart.42.fr/adminer/
+https://eamchart.42.fr/static/
 
 http://localhost/portfolio/ 
 
+# static website
 http://localhost:8081/
+
 
 ## to access Adminer:
 http://localhost:8080
@@ -539,11 +545,27 @@ Username: value of MADANI_USER
 Password: value of MADANI_PASSWORD
 Database: value of MADANI_DATABASE (optional)
 
+## access portainer
+https://localhost:9443
+http://localhost:9000
+- to check if it works `docker exec portainer sh -c 'ls -l /var/run && ls -l /var/run/docker.sock'`
+
+## left 
+i still have a problem with ftp if i did the command , docker compose restart
 
 
+bonus my service
+- Media Management Tools: Automate the organization and downloading of media with applications like Sonarr, Radarr, or Lidarr.
+
+- Authentication Gateway: Add an extra layer of security with multi-factor authentication for your web services using a service like Authelia. 
+
+- Monitoring Dashboards: Visualize metrics and the status of your services with tools like Grafana, Prometheus, or Uptime Kuma.
 
 
-
-
+## good practice
+is it a good practice to have all other container to access like this
+https://login.42.fr/portainer
+https://login.42.fr/adminer
+https://login.42.fr/static
 
 

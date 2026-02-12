@@ -56,9 +56,9 @@ services:
     ports:
       - "21:21"
       - "30000-30009:30000-30009"
-    # depends_on:
-    #   - wordpress
-    #   - mariadb
+    depends_on:
+      - wordpress
+      - mariadb
     env_file: .env
     networks:
       - 42network
@@ -86,9 +86,20 @@ services:
     #   - mariadb
     networks:
       - 42network
-    volumes:
-      - wordpress_data:/var/www/html
     restart: always
+
+  portainer:
+    build: ./requirements/bonus/portainer
+    container_name: portainer
+    restart: always
+    ports:
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - 42network
+
 
 volumes:
   wordpress_data:
@@ -104,6 +115,9 @@ volumes:
       type: none
       o: bind
       device: /home/eamchart/data/mariadb
+  
+  portainer_data:
+    name: portainer_data
 
 networks:
   42network:
