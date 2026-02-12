@@ -9,13 +9,7 @@ RUN curl -L https://github.com/portainer/portainer/releases/download/2.21.5/port
     && tar -xvf portainer.tar.gz \
     && rm portainer.tar.gz
 
-# Portainer data directory
-# VOLUME /data
-
-# Expose the HTTPS (9443) ports
 EXPOSE 9443
 
-# Start Portainer
-# WORKDIR /portainer
 ENTRYPOINT ["/portainer/portainer"]
 

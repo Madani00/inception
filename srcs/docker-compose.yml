@@ -69,9 +69,6 @@ services:
   redis:
     build: requirements/bonus/redis
     container_name: redis
-    # depends_on:
-    #   - wordpress
-    #   - mariadb
     networks:
       - 42network
     restart: always
@@ -81,9 +78,6 @@ services:
     container_name: static
     ports:
       - "8081:80"
-    # depends_on:
-    #   - wordpress
-    #   - mariadb
     networks:
       - 42network
     restart: always
