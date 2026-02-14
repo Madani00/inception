@@ -550,7 +550,21 @@ https://localhost:9443
 http://localhost:9000
 - to check if it works `docker exec portainer sh -c 'ls -l /var/run && ls -l /var/run/docker.sock'`
 
+## access ftp on terminal
+```bash
+# List files on the FTP server
+curl -u ftpuser:ftp12345 ftp://localhost/
 
+# Download a file (e.g. wp-config.php)
+curl -u ftpuser:ftp12345 ftp://localhost/wp-config.php -o wp-config.php
+
+# Upload a file
+curl -u ftpuser:ftp12345 -T testfile.txt ftp://localhost/
+
+ftp localhost
+# Enter: ftpuser / ftp12345
+# Then use: ls, get, put, etc.
+```
 
 
 
