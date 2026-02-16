@@ -17,17 +17,15 @@
 ## 📋 Table of Contents
 
 - [📖 Description](#-description)
-- [✨ Features](#-features)
-- [🏛️ Architecture](#️-architecture)
-- [🛠️ Technologies](#️-technologies)
 - [📦 Prerequisites](#-prerequisites)
-- [🚀 Installation](#-installation)
 - [💻 Usage](#-usage)
 - [📁 Project Structure](#-project-structure)
 - [⚙️ Configuration](#️-configuration)
 - [🔒 Security](#-security)
 - [🧪 Testing](#-testing)
-- [📚 Resources](#-resources)
+- [📊 Makefile Commands](#-makefile-commands)
+
+
 
 ---
 
@@ -280,22 +278,6 @@ inception/
 ---
 
 ## 🧪 Testing
-
-### Check Container Status
-
-```bash
-# View running containers
-make ps
-
-# Or:
-docker ps
-
-# Check logs
-make logs
-
-# Follow logs in real-time
-docker-compose -f srcs/docker-compose.yml logs -f
-```
 
 ### Health Checks
 
