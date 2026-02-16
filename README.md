@@ -17,19 +17,6 @@
 
 </div>
 
-## 📖 Description
-
-Inception is a **42 School project** that challenges students to build a complete web infrastructure using **Docker** and **Docker Compose**. The project focuses on understanding containerization, orchestration, networking, and system administration best practices.
-
-### 🎯 Project Goals
-
-✅ Set up a multi-container Docker application  
-✅ Configure a secure NGINX web server with TLS  
-✅ Deploy WordPress with PHP-FPM  
-✅ Set up MariaDB database  
-✅ Implement proper networking and volumes  
-✅ Follow Docker and security best practices  
-✅ (Bonus) Add Redis, Adminer, FTP, Portainer, and static site  
 
 ---
 **For user instructions, see [USER_DOC.md](USER_DOC.md)**
