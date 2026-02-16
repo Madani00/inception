@@ -1,2 +1,2 @@
 srcs/.env
-secrets/
+secrets/*
