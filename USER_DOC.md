@@ -109,36 +109,59 @@ cd inception
 
 ### 2️⃣ Configure Environment
 
+This project uses **Docker secrets** for sensitive data and a `.env` file for non-sensitive variables.
+
+#### Step 1: Create the `.env` file
+
 ```bash
 # Create .env file in srcs/ directory
 cd srcs/
 nano .env
 ```
 
-**Required environment variables:**
+**Environment variables in `.env`:**
 
 ```env
 # Domain
-DOMAIN_NAME=eamchart.42.fr
+DOMAIN_NAME=https://eamchart.42.fr
 
-# MariaDB
-MYSQL_ROOT_PASSWORD=your_secure_password
-MYSQL_DATABASE=wordpress
-MYSQL_USER=wpuser
-MYSQL_PASSWORD=your_db_password
+WP_TITLE=Inception
 
-# WordPress
-WP_ADMIN_NAME=admin
-WP_ADMIN_PASSWORD=secure_admin_pass
-WP_ADMIN_MAIL=admin@example.com
-WP_USER_NAME=user
-WP_USER_MAIL=user@example.com
-WP_USER_PASSWORD=user_password
-
-# FTP (if bonus)
-FTP_USER=ftpuser
-FTP_PASSWORD=ftppass
+INCEPTION_FTP_USER=
+INCEPTION_FTP_PASSWORD=
+FTP_PASV_ADDRESS=10.0.2.15
 ```
+
+#### Step 2: Create the secrets directory
+
+```bash
+# Create secrets directory in the root
+mkdir -p secrets
+cd secrets
+```
+
+**Create individual secret files:**
+
+```bash
+# Database secrets
+echo "wordpress" > db_database.txt
+echo "wpuser" > db_user.txt
+echo "your_secure_db_password" > db_password.txt
+echo "your_secure_root_password" > db_root_password.txt
+
+# WordPress admin secrets
+echo "admin" > wp_admin_user.txt
+echo "secure_admin_password" > wp_admin_password.txt
+echo "admin@example.com" > wp_admin_email.txt
+
+# WordPress user secrets
+echo "user" > wp_user.txt
+echo "user_password" > wp_user_password.txt
+echo "user@example.com" > wp_user_email.txt
+```
+
+
+All secret files should be in the `secrets/` directory at the root level.
 
 ### 3️⃣ Configure Hosts File
 
@@ -195,6 +218,7 @@ make down
 
 ```
 inception/
+├── secrets                          # contains secrets
 ├── Makefile                          # Build automation
 ├── README.md                         # This file
 ├── DEV_DOC.md                        # Developer documentation
