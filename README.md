@@ -1,40 +1,23 @@
-<!-- 🛡️ Best Practice: PHP-FPM
+*This project has been created as part of the 42 curriculum by eamchart.*
 
-Since we are using NGINX (not Apache), we cannot use standard PHP. NGINX is just a mailman; it doesn't know how to read PHP letters. It needs a translator.
+<div align="center">
 
-    PHP-FPM (FastCGI Process Manager) is that translator.
+# 🐳 Inception - Docker Infrastructure Project
 
-    NGINX sends the request -> PHP-FPM executes the code -> PHP-FPM sends HTML back to NGINX.
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Docker Compose](https://img.shields.io/badge/Docker_Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
+![WordPress](https://img.shields.io/badge/WordPress-21759B?style=for-the-badge&logo=wordpress&logoColor=white)
+![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 
-## 🐛 Troubleshooting
+**A complete containerized web infrastructure featuring Nginx, WordPress, MariaDB, and more**
 
+[Features](#-features) • [Architecture](#️-architecture) • [Installation](#-installation) • [Usage](#-usage) • [Project Structure](#-project-structure)
 
-## resources 
+</div>
 
-
-
-### A “Description” 
-section that clearly presents the project, including its goal and a brief overview.
-
-### An “Instructions” 
-section containing any relevant information about compilation,
-installation, and/or execution.
-
-- how to install wordpress
-https://developer.wordpress.org/advanced-administration/before-install/howto-install/
-- php / Install WP-CLI
-https://spinupwp.com/hosting-wordpress-yourself-nginx-php-mysql/
-- debian image from docker hub
-https://hub.docker.com/_/debian
-- mariadb why run as root is good practice
-https://mariadb.com/docs/server/security/securing-mariadb/running-mariadbd-as-root
-
-
-
-### A “Resources” 
-section listing classic references related to the topic (documen-
-tation, articles, tutorials, etc.), as well as a description of how AI was used —
-specifying for which tasks and which parts of the project. -->
 
 ![Build](https://img.shields.io/github/actions/workflow/status/Madani00/REPO/ci.yml)
 ![License](https://img.shields.io/badge/license-MIT-blue)
