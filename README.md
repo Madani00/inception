@@ -14,34 +14,23 @@
 
 **A complete containerized web infrastructure featuring Nginx, WordPress, MariaDB, and more**
 
-[Features](#-features) • [Architecture](#️-architecture) • [Installation](#-installation) • [Usage](#-usage) • [Project Structure](#-project-structure)
 
 </div>
 
+## 📖 Description
 
-![Build](https://img.shields.io/github/actions/workflow/status/Madani00/REPO/ci.yml)
-![License](https://img.shields.io/badge/license-MIT-blue)
-![Docker](https://img.shields.io/docker/image-size/OWNER/wordpress-img/latest)
+Inception is a **42 School project** that challenges students to build a complete web infrastructure using **Docker** and **Docker Compose**. The project focuses on understanding containerization, orchestration, networking, and system administration best practices.
 
+### 🎯 Project Goals
 
-```mermaid
-graph LR
-  client --> Nginx
-  Nginx --> WordPress
-  WordPress --> MariaDB
-  Nginx -.-> TLS
-```
+✅ Set up a multi-container Docker application  
+✅ Configure a secure NGINX web server with TLS  
+✅ Deploy WordPress with PHP-FPM  
+✅ Set up MariaDB database  
+✅ Implement proper networking and volumes  
+✅ Follow Docker and security best practices  
+✅ (Bonus) Add Redis, Adminer, FTP, Portainer, and static site  
 
-| Task | Command |
-| --- | --- |
-| Start stack | `docker compose -f srcs/docker-compose.yml up -d` |
-| Logs | `docker compose -f srcs/docker-compose.yml logs -f nginx` |
-| Tear down | `docker compose -f srcs/docker-compose.yml down -v` |
-
-- [ ] Run lint/tests
-- [ ] Update README if configs change
-
-> ⚠️ Expose port 443 only in trusted networks.
 
 # ✔️ Part 0: configs , dockerfiles ✔️
 ## 1.MariaDB
@@ -53,10 +42,6 @@ graph LR
 
 ## 3. WordPress
 [check this link --> wordpress](./srcs/requirements/wordpress/README.md)
-
-
-
-
 
 
 
@@ -480,8 +465,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 ```
 (`rm -rf`) deletes the temporary package lists, making your container even smaller.
-- if an error happens redirect it to a youtube video lol like : https://www.youtube.com/watch?v=CLDSE7RHvno
-- add `.dockerignore`
+- use `secrets` for sensitive passwords instead of using `.env`
 
 # some usefull commands
 ```bash
@@ -509,55 +493,4 @@ curl -k -I https://eamchart.42.fr
 docker-compose top 
 
 ```
-#  Use NGINX as a reverse proxy to route paths to backend services:
-https://eamchart.42.fr/portainer/
-https://eamchart.42.fr/adminer/
-https://eamchart.42.fr/static/
-
-http://localhost/portfolio/ 
-
-# static website
-http://localhost:8081/
-
-
-## to access Adminer:
-http://localhost:8080
-System: MySQL
-Server: mariadb
-Username: value of MADANI_USER
-Password: value of MADANI_PASSWORD
-Database: value of MADANI_DATABASE (optional)
-
-## access portainer
-https://localhost:9443
-http://localhost:9000
-- to check if it works `docker exec portainer sh -c 'ls -l /var/run && ls -l /var/run/docker.sock'`
-
-## access ftp on terminal
-```bash
-# List files on the FTP server
-curl -u ftpuser:ftp12345 ftp://localhost/
-
-# Download a file (e.g. wp-config.php)
-curl -u ftpuser:ftp12345 ftp://localhost/wp-config.php -o wp-config.php
-
-# Upload a file
-curl -u ftpuser:ftp12345 -T testfile.txt ftp://localhost/
-
-ftp localhost
-# Enter: ftpuser / ftp12345
-# Then use: ls, get, put, etc.
-```
-
-
-
-
-
-
-## good practice
-Yes, single domain with subpaths is better practice for production. It's more professional and secure.
-https://login.42.fr/portainer
-https://login.42.fr/adminer
-https://login.42.fr/static
-
 
