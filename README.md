@@ -31,6 +31,8 @@ Inception is a **42 School project** that challenges students to build a complet
 ✅ Follow Docker and security best practices  
 ✅ (Bonus) Add Redis, Adminer, FTP, Portainer, and static site  
 
+---
+**For user instructions, see [USER_DOC.md](USER_DOC.md)**
 
 # ✔️ Part 0: configs , dockerfiles ✔️
 ## 1.MariaDB
