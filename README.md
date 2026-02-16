@@ -21,15 +21,15 @@
 ---
 **For user instructions, see [USER_DOC.md](USER_DOC.md)**
 
-# ✔️ Part 0: configs , dockerfiles ✔️
-## 1.MariaDB
+## ✔️ Part 0: configs , dockerfiles ✔️
+### 1.MariaDB
 [check this link --> MariaDB](./srcs/requirements/mariadb/README.md)
 
-## 2.Nginx
+### 2.Nginx
 [check this link --> Nginx](./srcs/requirements/nginx/README.md)
 
 
-## 3. WordPress
+### 3. WordPress
 [check this link --> wordpress](./srcs/requirements/wordpress/README.md)
 
 
