@@ -38,11 +38,11 @@
 
 
 
-# ✔️ Part 1: Individual Basic Checks ✔️
+## ✔️ Part 1: Individual Basic Checks ✔️
 Since we haven't created the Docker network & docker compose yet,
 lets test all the 3 containers manually if everything is working fine.
 
-## 1. Test MariaDB (The Engine)
+### 1. Test MariaDB (The Engine)
 since you didn't create `.env` file, we'll pass the environment variables manually to mariadb.
 ```bash
 # Go to folder
@@ -72,7 +72,7 @@ docker exec mariadb mysql -u madanidb -p"madani_password" -e "SHOW DATABASES;"
 if you do not encounter any errors with these command, you are good to go
 
 
-## 2. Test NGINX (The Gatekeeper)
+### 2. Test NGINX (The Gatekeeper)
 
 ```bash
 cd ~/inception/srcs/requirements/nginx
@@ -100,7 +100,7 @@ docker exec nginx sh -c 'echo "<h1>Hello from Docker! NGINX is working.</h1>" > 
 
 
 
-## 3. Test WordPress (The App)
+### 3. Test WordPress (The App)
 This one might complain about missing DB, but PHP-FPM should still start.
 ```bash
 cd ~/inception/srcs/requirements/wordpress
@@ -120,7 +120,7 @@ all good, sure the connection will fail cause the mariadb container is not runni
 
 
 
-# ✔️ Part 2: Advanced Checks NGINX & WORDPRESS & MariaDB ✔️
+## ✔️ Part 2: Advanced Checks NGINX & WORDPRESS & MariaDB ✔️
 
 - since you don't have connection established between the nginx and php, so they cannot communicate.
 so next we need to configure php, and we will make a small modifications to it.
@@ -158,14 +158,14 @@ now NGINX can send its work to PHP-FPM which waits in the background on Port 900
 
 nginx and wordpress containers are in isolated rooms , we need to put them in the same room to test the connection.
 
-## test NGINX & WORDPRESS
-### 🛠️ Step 1: Create a Manual Network 
+### test NGINX & WORDPRESS
+#### 🛠️ Step 1: Create a Manual Network 
 
 ```bash
 docker network create test-net
 
 ```
-### 🛠️ Step 2: Create a Volume
+#### 🛠️ Step 2: Create a Volume
 NGINX cannot look inside the WordPress container's storage. that is why we need to create 
 a shared storage space so NGINX can see the files WordPress downloads.
 
@@ -174,7 +174,7 @@ a shared storage space so NGINX can see the files WordPress downloads.
 docker volume create manual-test-vol 
 ```
 
-### 🛠️ Step 3: Start WordPress
+#### 🛠️ Step 3: Start WordPress
 
 ```bash
 docker build -t wordpress-img .
@@ -185,7 +185,7 @@ docker run --rm -d --name wordpress  --network test-net -v manual-test-vol:/var/
 
 ```
 
-### 🛠️ Step 4: Start NGINX
+#### 🛠️ Step 4: Start NGINX
 
 Now we start NGINX and attach it to the same network.
 ```bash
@@ -197,7 +197,7 @@ docker run --rm -d --name nginx --network test-net -v manual-test-vol:/var/www/h
 both the containers should stay running so our test would be valid.
 
 
-### 🛠️ Step 5: test 
+#### 🛠️ Step 5: test 
 If you do this:
 1. Go to https://localhost 
 2. if you are lucky like me you are gonna see a page like this:
@@ -218,10 +218,10 @@ wp-cli config create --dbname=$MADANI_DATABASE \
 --dbhost=mariadb:3306 --allow-root 
 ```
 
-## test MariaDB & WORDPRESS & Nginx
+### test MariaDB & WORDPRESS & Nginx
 
 first of all before testing all togother, let's first clean everything
-### 🧹 Step 1: Clean
+#### 🧹 Step 1: Clean
 
 ```zsh
 # Stop and remove containers
@@ -234,7 +234,7 @@ docker network rm test-net
 
 ```
 
-### 🛠️ Step 2: Start all
+#### 🛠️ Step 2: Start all
 
 ```bash
 
@@ -281,7 +281,7 @@ if all goas well you are gonna see this page
 
 ---
 
-# docker compose
+## docker compose
 create the docker compose
 ```docker-compose
 services:
@@ -360,7 +360,7 @@ docker compose -f 'srcs/docker-compose.yml' up 'mariadb'
 rm -rf /home/eamchart/data/mariadb/* /home/eamchart/data/wordpress/*
 ```
 
-## add users
+### add users
 the subject told us to create 2 users we previously create the admin now it's time to the other other. to do so lets add the following to wordpress script:
 ```bash
 # Create a new WordPress user.
@@ -370,7 +370,7 @@ the subject told us to create 2 users we previously create the admin now it's ti
 						--allow-root
 ```
 now lets test the users on the browser.
-### 🖥️ Method 1: The Browser Test
+#### 🖥️ Method 1: The Browser Test
 
 
 1. Go to https://eamchart.42.fr/wp-login.php.
@@ -388,7 +388,7 @@ now lets test the users on the browser.
         - NO: ✅ PERFECT. This user is locked out of the dangerous stuff.
 
 
-### 💽 5. MariaDB & Persistence test
+#### 💽 5. MariaDB & Persistence test
 - The "Delete" Test:
   1. Create a post in WordPress.
   2. Run docker compose down and Run docker compose up -d.
@@ -405,7 +405,7 @@ now lets test the users on the browser.
 
 
 
-## final touch (fix errors)
+### final touch (fix errors)
 
 1. 
 
@@ -431,7 +431,7 @@ i added a condition in both script of mariadb & wordpress to check if the wordpr
 
 
 
-# some best practices
+## some best practices
 - in the configuration file of wordpress we changed:
 ```bash
 # CRITICAL: listen on port 9000 on all interfaces
@@ -456,7 +456,7 @@ RUN apt-get update && apt-get install -y \
 (`rm -rf`) deletes the temporary package lists, making your container even smaller.
 - use `secrets` for sensitive passwords instead of using `.env`
 
-# some usefull commands
+## some usefull commands
 ```bash
 # Check logs
 # When a container exits immediately, it usually "screamed" an error message, check it with
