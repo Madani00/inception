@@ -16,6 +16,7 @@
 
 </div>
 
+<img width="874" height="816" alt="Screenshot from 2026-01-22 10-44-15" src="https://github.com/user-attachments/assets/b24089a5-a4e8-4916-b843-a33b43c66b4d" />
 
 ---
 **For user instructions, see [USER_DOC.md](USER_DOC.md)**
