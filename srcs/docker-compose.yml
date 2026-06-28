@@ -58,8 +58,8 @@ services:
   adminer:
     build: requirements/bonus/adminer
     container_name: adminer
-    ports:
-      - "8080:8080"
+    # ports:
+    #   - "8080:8080"
     depends_on:
       - mariadb
     networks:
@@ -92,8 +92,8 @@ services:
   static:
     build: requirements/bonus/static
     container_name: static
-    ports:
-      - "8081:80"
+    # ports:
+    #   - "8081:80"
     networks:
       - 42network
     restart: always
@@ -102,8 +102,8 @@ services:
     build: ./requirements/bonus/portainer
     container_name: portainer
     restart: always
-    ports:
-      - "9443:9443"
+    # ports:
+    #   - "9443:9443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
